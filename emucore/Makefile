@@ -11,7 +11,7 @@ DEPS := $(OBJS:.o=.d)  # one dependency file for each source
 INC_DIRS := include/
 INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 
-CPPFLAGS ?= $(INC_FLAGS) 
+CPPFLAGS ?= $(INC_FLAGS) -Wall -Werror 
 LDFLAGS = -lm 
 
 .PHONY: emulib
@@ -22,13 +22,12 @@ emulib: $(OBJS)
 
 # rule to generate a dep file by using the C preprocessor
 # (see man cpp for details on the -MM and -MT options)
-%.d: %.c
-	@$(CPP) $(CFLAGS) $< -MM -MT $(@:.d=.o) >$@
+%.d: %.cpp
+	$(CPP) $(CPPFLAGS) $< -MM -MT $(@:.d=.o) >$@
 
 .PHONY: clean
 clean:
-	rm -f $(OBJS) $(TARGET_LIB)
+	rm -f $(OBJS) $(TARGET_LIB) $(DEPS)
 
-.PHONY: cleandep
-cleandep:
-	rm -f $(DEPS)
+.PHONY: all
+all: $(TARGET_LIB)
