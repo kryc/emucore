@@ -10,6 +10,8 @@
 #define InterruptableCore_hpp
 
 #include <map>
+#include <functional>
+#include <mutex>
 
 /* Callback info from https://embeddedartistry.com/blog/2017/1/26/c11-improving-your-callback-game */
 using InterruptCallback = std::function<void(int)>;
