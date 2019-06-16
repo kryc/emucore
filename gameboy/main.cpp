@@ -11,16 +11,29 @@
 #include <thread>
 
 #include "ProcessingCore.hpp"
+#include "Memory.hpp"
 
 int main(int argc, const char * argv[]) {
 	// insert code here...
-	ProcessingCore p;
 	
-	p.RegisterInterrupt(1, INTERRUPT_CALLBACK(&ProcessingCore::Cb, &p));
-	p.RaiseInterrupt(1);
+	Memory m;
 	
-	p.Run();
+	m.LoadRom(argv[1]);
+	
+	std::cerr << (int)m.Get16(0xff47) << std::endl;
+	
+	m[0xe001] = 0xff;
+	m[0xe002] = 0xfe;
+	
+	std::cerr << (int)m[0xc001].Get() << std::endl;
+	std::cerr << (int)m[0xc002].Get() << std::endl;
+	std::cerr << (int)m[0xff04].Get() << std::endl;
+	std::cerr << (int)m[0xff04].Get() << std::endl;
+	
+	m[0xff47] = 1;
+	
+//	std::cerr << m[0xff04] << std::endl;
 
-	std::cout << "Hello, World!\n";
+	std::cout << "Hello " << m.GetRomName() << std::endl;
 	return 0;
 }
