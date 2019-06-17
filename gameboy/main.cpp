@@ -17,7 +17,7 @@ int main(int argc, const char * argv[]) {
 	
 	Cpu cpu;
 #ifdef DEBUG
-	cpu.SetFreq(8.0);
+	cpu.SetFreq(32.0);
 #else
 	cpu.SetFreqMhz(4.194304);
 #endif

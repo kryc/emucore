@@ -80,7 +80,16 @@ Cpu::INC_B(
  Cycles:	4/4
  --*/
 {
-	throw std::runtime_error("Instruction INC B not implemented");
+	uint8_t before = m_Registers.B;
+	uint8_t operand = 1;
+	uint8_t after = m_Registers.B + operand;
+	
+	RESET_FLAG_N();
+	CHK_SET_FLAG_Z(after);
+	CHK_SET_FLAG_H(before, operand, after);
+	
+	m_Registers.B = after;
+	
 	return Opcode.TickCount;
 }
 
@@ -228,7 +237,16 @@ Cpu::INC_C(
  Cycles:	4/4
  --*/
 {
-	throw std::runtime_error("Instruction INC C not implemented");
+	uint8_t before = m_Registers.C;
+	uint8_t operand = 1;
+	uint8_t after = m_Registers.C + operand;
+	
+	RESET_FLAG_N();
+	CHK_SET_FLAG_Z(after);
+	CHK_SET_FLAG_H(before, operand, after);
+	
+	m_Registers.C = after;
+	
 	return Opcode.TickCount;
 }
 
@@ -245,7 +263,16 @@ Cpu::DEC_C(
  Cycles:	4/4
  --*/
 {
-	throw std::runtime_error("Instruction DEC C not implemented");
+	uint8_t before = m_Registers.C;
+	int8_t operand = -1;
+	uint8_t after = m_Registers.C + operand;
+	
+	SET_FLAG_N();
+	CHK_SET_FLAG_Z(after);
+	CHK_SET_FLAG_H(before, operand, after);
+	
+	m_Registers.D = after;
+	
 	return Opcode.TickCount;
 }
 
@@ -367,7 +394,16 @@ Cpu::INC_D(
  Cycles:	4/4
  --*/
 {
-	throw std::runtime_error("Instruction INC D not implemented");
+	uint8_t before = m_Registers.D;
+	uint8_t operand = 1;
+	uint8_t after = m_Registers.D + operand;
+	
+	RESET_FLAG_N();
+	CHK_SET_FLAG_Z(after);
+	CHK_SET_FLAG_H(before, operand, after);
+	
+	m_Registers.D = after;
+	
 	return Opcode.TickCount;
 }
 
@@ -384,7 +420,16 @@ Cpu::DEC_D(
  Cycles:	4/4
  --*/
 {
-	throw std::runtime_error("Instruction DEC D not implemented");
+	uint8_t before = m_Registers.D;
+	int8_t operand = -1;
+	uint8_t after = m_Registers.D + operand;
+	
+	SET_FLAG_N();
+	CHK_SET_FLAG_Z(after);
+	CHK_SET_FLAG_H(before, operand, after);
+	
+	m_Registers.D = after;
+	
 	return Opcode.TickCount;
 }
 
@@ -503,7 +548,16 @@ Cpu::INC_E(
  Cycles:	4/4
  --*/
 {
-	throw std::runtime_error("Instruction INC E not implemented");
+	uint8_t before = m_Registers.E;
+	uint8_t operand = 1;
+	uint8_t after = m_Registers.E + operand;
+	
+	RESET_FLAG_N();
+	CHK_SET_FLAG_Z(after);
+	CHK_SET_FLAG_H(before, operand, after);
+	
+	m_Registers.E = after;
+	
 	return Opcode.TickCount;
 }
 
@@ -520,7 +574,16 @@ Cpu::DEC_E(
  Cycles:	4/4
  --*/
 {
-	throw std::runtime_error("Instruction DEC E not implemented");
+	uint8_t before = m_Registers.E;
+	int8_t operand = -1;
+	uint8_t after = m_Registers.E + operand;
+	
+	SET_FLAG_N();
+	CHK_SET_FLAG_Z(after);
+	CHK_SET_FLAG_H(before, operand, after);
+	
+	m_Registers.E = after;
+	
 	return Opcode.TickCount;
 }
 
@@ -537,7 +600,10 @@ Cpu::LD_E_d8(
  Cycles:	8/8
  --*/
 {
-	throw std::runtime_error("Instruction LD E,d8 not implemented");
+	m_Registers.E = IMM8();
+	
+	/* Flags not affected */
+	
 	return Opcode.TickCount;
 }
 
@@ -554,7 +620,26 @@ Cpu::RRA(
  Cycles:	4/4
  --*/
 {
-	throw std::runtime_error("Instruction RRA not implemented");
+	uint8_t carry = FLAG_SET_C() ? 0 : 0x80;
+	uint8_t result = m_Registers.A;
+	if ((result & 0x1) != 0)
+	{
+		SET_FLAG_C();
+	}
+	else
+	{
+		RESET_FLAG_C();
+	}
+	
+	result >>= 1;
+	result |= carry;
+	
+	CHK_SET_FLAG_Z(result);
+	RESET_FLAG_N();
+	RESET_FLAG_H();
+	
+	m_Registers.A = result;
+	
 	return Opcode.TickCount;
 }
 
@@ -571,7 +656,13 @@ Cpu::JR_NZ_r8(
  Cycles:	12/8
  --*/
 {
-	throw std::runtime_error("Instruction JR NZ,r8 not implemented");
+	if( !FLAG_SET_Z() )
+	{
+		m_Registers.PC += IMM8();
+		TickCount = Opcode.BranchTickCount;
+		return Opcode.BranchTickCount;
+	}
+	
 	return Opcode.TickCount;
 }
 
@@ -1054,7 +1145,16 @@ Cpu::INC_A(
  Cycles:	4/4
  --*/
 {
-	throw std::runtime_error("Instruction INC A not implemented");
+	uint8_t before = m_Registers.A;
+	uint8_t operand = 1;
+	uint8_t after = m_Registers.A + operand;
+	
+	RESET_FLAG_N();
+	CHK_SET_FLAG_Z(after);
+	CHK_SET_FLAG_H(before, operand, after);
+	
+	m_Registers.A = after;
+	
 	return Opcode.TickCount;
 }
 
@@ -1071,7 +1171,16 @@ Cpu::DEC_A(
  Cycles:	4/4
  --*/
 {
-	throw std::runtime_error("Instruction DEC A not implemented");
+	uint8_t before = m_Registers.A;
+	int8_t operand = -1;
+	uint8_t after = m_Registers.A + operand;
+	
+	SET_FLAG_N();
+	CHK_SET_FLAG_Z(after);
+	CHK_SET_FLAG_H(before, operand, after);
+	
+	m_Registers.A = after;
+	
 	return Opcode.TickCount;
 }
 
@@ -2108,7 +2217,10 @@ Cpu::LD_A_D(
  Cycles:	4/4
  --*/
 {
-	throw std::runtime_error("Instruction LD A,D not implemented");
+	m_Registers.A = m_Registers.D;
+	
+	/* Flags not affected */
+	
 	return Opcode.TickCount;
 }
 
@@ -2363,7 +2475,20 @@ Cpu::ADC_A_C(
  Cycles:	4/4
  --*/
 {
-	throw std::runtime_error("Instruction ADC A,C not implemented");
+	uint8_t operand = m_Registers.A;
+	if( FLAG_SET_C() )
+		operand +=1;
+	
+	uint8_t before = m_Registers.A;
+	uint8_t after = m_Registers.A + operand;
+	
+	m_Registers.F = 0;
+	CHK_SET_FLAG_C(before, operand, after);
+	CHK_SET_FLAG_H(before, operand, after);
+	CHK_SET_FLAG_Z(after);
+	
+	m_Registers.A = after;
+	
 	return Opcode.TickCount;
 }
 
@@ -3422,7 +3547,11 @@ Cpu::RST_00H(
  Cycles:	16/16
  --*/
 {
-	throw std::runtime_error("Instruction RST 00H not implemented");
+	PUSH_16(m_Registers.PC);
+	m_Registers.PC = 0x00;
+	
+	/* Flags not affected */
+	
 	return Opcode.TickCount;
 }
 
@@ -3558,7 +3687,11 @@ Cpu::RST_08H(
  Cycles:	16/16
  --*/
 {
-	throw std::runtime_error("Instruction RST 08H not implemented");
+	PUSH_16(m_Registers.PC);
+	m_Registers.PC = 0x08;
+	
+	/* Flags not affected */
+	
 	return Opcode.TickCount;
 }
 
@@ -3677,7 +3810,11 @@ Cpu::RST_10H(
  Cycles:	16/16
  --*/
 {
-	throw std::runtime_error("Instruction RST 10H not implemented");
+	PUSH_16(m_Registers.PC);
+	m_Registers.PC = 0x10;
+	
+	/* Flags not affected */
+	
 	return Opcode.TickCount;
 }
 
@@ -3779,7 +3916,11 @@ Cpu::RST_18H(
  Cycles:	16/16
  --*/
 {
-	throw std::runtime_error("Instruction RST 18H not implemented");
+	PUSH_16(m_Registers.PC);
+	m_Registers.PC = 0x18;
+	
+	/* Flags not affected */
+	
 	return Opcode.TickCount;
 }
 
@@ -3881,7 +4022,11 @@ Cpu::RST_20H(
  Cycles:	16/16
  --*/
 {
-	throw std::runtime_error("Instruction RST 20H not implemented");
+	PUSH_16(m_Registers.PC);
+	m_Registers.PC = 0x20;
+	
+	/* Flags not affected */
+	
 	return Opcode.TickCount;
 }
 
@@ -3966,7 +4111,11 @@ Cpu::RST_28H(
  Cycles:	16/16
  --*/
 {
-	throw std::runtime_error("Instruction RST 28H not implemented");
+	PUSH_16(m_Registers.PC);
+	m_Registers.PC = 0x28;
+	
+	/* Flags not affected */
+	
 	return Opcode.TickCount;
 }
 
@@ -4085,7 +4234,11 @@ Cpu::RST_30H(
  Cycles:	16/16
  --*/
 {
-	throw std::runtime_error("Instruction RST 30H not implemented");
+	PUSH_16(m_Registers.PC);
+	m_Registers.PC = 0x30;
+	
+	/* Flags not affected */
+	
 	return Opcode.TickCount;
 }
 
@@ -4187,7 +4340,11 @@ Cpu::RST_38H(
  Cycles:	16/16
  --*/
 {
-	throw std::runtime_error("Instruction RST 38H not implemented");
+	PUSH_16(m_Registers.PC);
+	m_Registers.PC = 0x38;
+	
+	/* Flags not affected */
+	
 	return Opcode.TickCount;
 }
 

@@ -37,6 +37,34 @@ Cpu::Run(void)
 	Clock::Run();
 }
 
+std::string
+Cpu::FormatDebugString(
+   std::string DebugString
+   )
+{
+	std::size_t found = DebugString.find("a16");
+	if( found == std::string::npos )
+		found = DebugString.find("d16");
+	if( found == std::string::npos )
+		found = DebugString.find("r16");
+	if ( found != std::string::npos ){
+		std::stringstream stream;
+		stream << "0x" << std::hex << (int)IMM16();
+		DebugString.replace(found, 3, stream.str());
+	}
+	found = DebugString.find("a8");
+	if( found == std::string::npos )
+		found = DebugString.find("d8");
+	if( found == std::string::npos )
+		found = DebugString.find("r8");
+	if ( found != std::string::npos ){
+		std::stringstream stream;
+		stream << "0x" << std::hex << (int)IMM8();
+		DebugString.replace(found, 2, stream.str());
+	}
+	return DebugString;
+}
+
 void
 Cpu::Tick(void)
 /*++
@@ -49,43 +77,27 @@ Cpu::Tick(void)
 {
 	static ssize_t  ticksTaken = 0;
 	static ssize_t	ticksInCurrentOp = 0;
-	static ssize_t  ticksRemaining = 0;
+	static ssize_t  ticksUsed = 0;
 	static uint16_t startingPC = 0;
 	static struct Opcode opcode{};
 	
-	if( ticksRemaining == 0 )
+	if( ticksUsed == ticksInCurrentOp )
 	{
 		/* We have completed the previous operation (or it is the first op).
 		Read the new op and reset the counters */
-		assert(m_Registers.PC > 0 && m_Registers.PC < 0x8000);
+		assert(m_Registers.PC >= 0 && m_Registers.PC < 0x8000);
 		startingPC = m_Registers.PC;
 		uint8_t nextOpcode = m_Memory[m_Registers.PC].Get();
 		opcode = g_Instructions.at(nextOpcode);
 		
 		ticksTaken = 0;
 		ticksInCurrentOp = opcode.TickCount;
-		ticksRemaining = ticksInCurrentOp;
+		ticksUsed = 0;
+		assert(opcode.TickCount <= opcode.BranchTickCount);
 		
 #ifdef DEBUG
 		/* Patch up the debug string */
-		std::string debugString = opcode.DebugString;
-		std::size_t found = debugString.find("a16");
-		if( found == std::string::npos )
-			found = debugString.find("d16");
-  		if ( found != std::string::npos ){
-  			std::stringstream stream;
-			stream << "0x" << std::hex << (int)IMM16();
-  			debugString.replace(found, 3, stream.str());
-  		}
-		found = debugString.find("a8");
-		if( found == std::string::npos )
-			found = debugString.find("d8");
-  		if ( found != std::string::npos ){
-  			std::stringstream stream;
-			stream << "0x" << std::hex << (int)IMM8();
-  			debugString.replace(found, 2, stream.str());
-  		}
-		std::cout << debugString << std::endl;
+		std::cout << FormatDebugString(opcode.DebugString) << std::endl;
 #endif
 	}
 	
@@ -97,9 +109,9 @@ Cpu::Tick(void)
 		assert(ticksTaken <= ticksInCurrentOp);
 	}
 
-	ticksRemaining--;
+	ticksUsed++;
 	
-	if( ticksRemaining == 0 &&
+	if( ticksUsed == ticksInCurrentOp &&
 	   startingPC == m_Registers.PC )
 	{
 		/* Tick on the instruction pointer. ONLY if it didnt change in the instruction */

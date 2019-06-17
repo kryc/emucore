@@ -118,10 +118,22 @@ struct Opcode
 #define SET_FLAG_N() (m_Registers.F |= FLAG_N)
 #define SET_FLAG_Z() (m_Registers.F |= FLAG_Z)
 
+#define FLAG_SET_H() ((m_Registers.F & FLAG_H) != 0)
+#define FLAG_SET_C() ((m_Registers.F & FLAG_C) != 0)
+#define FLAG_SET_N() ((m_Registers.F & FLAG_N) != 0)
+#define FLAG_SET_Z() ((m_Registers.F & FLAG_Z) != 0)
+
 #define RESET_FLAG_H() (m_Registers.F &= ~FLAG_H)
 #define RESET_FLAG_C() (m_Registers.F &= ~FLAG_C)
 #define RESET_FLAG_N() (m_Registers.F &= ~FLAG_N)
 #define RESET_FLAG_Z() (m_Registers.F &= ~FLAG_Z)
+
+#define PUSH_16(val) m_Memory[m_Registers.SP-1] = (val) >> 8; \
+						m_Memory[m_Registers.SP-2] = (val) & 0x0f; \
+						m_Registers.SP -= 2; \
+
+#define PUSH_8(val) m_Memory[m_Registers.SP-1] = (val) & 0xf; \
+						m_Registers.SP -= 1; \
 
 #define IMM8() (m_Memory[m_Registers.PC+1].Get())
 #define IMM16() (m_Memory.Get16(m_Registers.PC+1))
@@ -145,6 +157,7 @@ public:
 	/* The following are the opcode callback routines */
 #include "ClassOperations.txt"
 private:
+	std::string FormatDebugString(std::string DebugString);
 	REGISTERS 	m_Registers{};
 	Memory 		m_Memory;
 };
