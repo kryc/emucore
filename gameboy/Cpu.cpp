@@ -57,7 +57,6 @@ Cpu::Tick(void)
 		/* We have completed the previous operation (or it is the first op).
 		Read the new op and reset the counters */
 		assert(m_Registers.PC > 0 && m_Registers.PC < 0x8000);
-		std::cout << m_Registers.PC << "[" << (int)m_Memory[m_Registers.PC].Get() << "]" << std::endl;
 		startingPC = m_Registers.PC;
 		uint8_t nextOpcode = m_Memory[m_Registers.PC].Get();
 		opcode = g_Instructions.at(nextOpcode);
