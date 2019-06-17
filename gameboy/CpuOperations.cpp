@@ -61,7 +61,16 @@ Cpu::DEC_B(
 	ssize_t& TicksRequired
 	)
 {
-	throw std::runtime_error("Instruction DEC B not implemented");
+	uint8_t before = m_Registers.B;
+	int8_t operand = -1;
+	uint8_t after = m_Registers.B + operand;
+
+	SET_FLAG_N();
+	CHK_SET_FLAG_Z(after);
+	CHK_SET_FLAG_H(before, operand, after);
+			
+	m_Registers.B = after;
+
 	return Opcode.TickCount;
 }
 
@@ -72,7 +81,10 @@ Cpu::LD_B_d8(
 	ssize_t& TicksRequired
 	)
 {
-	throw std::runtime_error("Instruction LD B,d8 not implemented");
+	m_Registers.B = IMM8();
+
+	/* Flags not affected */
+
 	return Opcode.TickCount;
 }
 
@@ -160,7 +172,10 @@ Cpu::LD_C_d8(
 	ssize_t& TicksRequired
 	)
 {
-	throw std::runtime_error("Instruction LD C,d8 not implemented");
+	m_Registers.C = IMM8();
+
+	/* Flags not affected */
+
 	return Opcode.TickCount;
 }
 
@@ -369,7 +384,10 @@ Cpu::LD_HL_d16(
 	ssize_t& TicksRequired
 	)
 {
-	throw std::runtime_error("Instruction LD HL,d16 not implemented");
+	m_Registers.HL = m_Memory.Get16(m_Registers.PC+1);
+
+	/* No flags affected */
+
 	return Opcode.TickCount;
 }
 
@@ -556,7 +574,12 @@ Cpu::LD__HLmin__A(
 	ssize_t& TicksRequired
 	)
 {
-	throw std::runtime_error("Instruction LD (HL-),A not implemented");
+	
+	m_Memory[m_Registers.HL] = m_Registers.A;
+	m_Registers.HL--;
+
+	/* Flags not affected */
+
 	return Opcode.TickCount;
 }
 
@@ -1931,7 +1954,11 @@ Cpu::XOR_A(
 	ssize_t& TicksRequired
 	)
 {
-	throw std::runtime_error("Instruction XOR A not implemented");
+	m_Registers.A ^= m_Registers.A;
+	m_Registers.F = 0;
+
+	CHK_SET_FLAG_Z(m_Registers.A);
+
 	return Opcode.TickCount;
 }
 

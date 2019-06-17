@@ -8,6 +8,7 @@
 
 #include <map>
 #include <functional>
+#include <sstream>
 #include <assert.h>
 #include "Cpu.hpp"
 
@@ -65,7 +66,27 @@ Cpu::Tick(void)
 		ticksInCurrentOp = opcode.TickCount;
 		ticksRemaining = ticksInCurrentOp;
 		
-		std::cout << opcode.DebugString << std::endl;
+#ifdef DEBUG
+		/* Patch up the debug string */
+		std::string debugString = opcode.DebugString;
+		std::size_t found = debugString.find("a16");
+		if( found == std::string::npos )
+			found = debugString.find("d16");
+  		if ( found != std::string::npos ){
+  			std::stringstream stream;
+			stream << "0x" << std::hex << (int)IMM16();
+  			debugString.replace(found, 3, stream.str());
+  		}
+		found = debugString.find("a8");
+		if( found == std::string::npos )
+			found = debugString.find("d8");
+  		if ( found != std::string::npos ){
+  			std::stringstream stream;
+			stream << "0x" << std::hex << (int)IMM8();
+  			debugString.replace(found, 2, stream.str());
+  		}
+		std::cout << debugString << std::endl;
+#endif
 	}
 	
 	if( ticksTaken < ticksInCurrentOp )

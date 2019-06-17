@@ -108,13 +108,30 @@ struct Opcode
 #define OPCODE_CALLBACK(OpcodeNum) ssize_t Callback##OpcodeNum(uint8_t* PC, ssize_t Ticks)
 #define OPCODE_PROTO(OpcodeNum)ssize_t Cpu::Callback##OpcodeNum(uint8_t* PC, ssize_t Ticks)
 
-enum
-{
-	FLAG_ZERO = 0x80,
-	FLAG_SUB =  0x40,
-	FLAG_HALF = 0x20,
-	FLAG_CARR = 0x10
-};
+#define FLAG_Z (1 << 7) //result is zero or two values match in CP op
+#define FLAG_N (1 << 6) //subtraction performed in last operation
+#define FLAG_H (1 << 5) //set if carry occured from lower nibble in last op
+#define FLAG_C (1 << 4) //set if carry occurred or if reg A is smaller during CP op
+
+#define SET_FLAG_H() (m_Registers.F |= FLAG_H)
+#define SET_FLAG_C() (m_Registers.F |= FLAG_C)
+#define SET_FLAG_N() (m_Registers.F |= FLAG_N)
+#define SET_FLAG_Z() (m_Registers.F |= FLAG_Z)
+
+#define RESET_FLAG_H() (m_Registers.F &= ~FLAG_H)
+#define RESET_FLAG_C() (m_Registers.F &= ~FLAG_C)
+#define RESET_FLAG_N() (m_Registers.F &= ~FLAG_N)
+#define RESET_FLAG_Z() (m_Registers.F &= ~FLAG_Z)
+
+#define IMM8() (m_Memory[m_Registers.PC+1].Get())
+#define IMM16() (m_Memory.Get16(m_Registers.PC+1))
+
+#define CHK_SET_FLAG_C(before,opnd,after) ((((before ^ opnd ^ after) & 0x100) == 0x100) ? (m_Registers.F |= FLAG_C):(m_Registers.F &= ~FLAG_C))
+#define CHK_SET_FLAG_H(before,opnd,after) ((((before ^ opnd ^ after) & 0x10) == 0x10) ? (m_Registers.F |= FLAG_H) : (m_Registers.F &= ~FLAG_H))
+#define CHK_SET_FLAG_Z(after) ((after==0)? (m_Registers.F |= FLAG_Z) : (m_Registers.F &= ~FLAG_Z))
+
+#define CHK_SET_FLAG_C_16(before,opnd,after) (((( after & 0x10000) > 0) ? (m_Registers.F |= FLAG_C):(m_Registers.F &= ~FLAG_C)))
+#define CHK_SET_FLAG_H_16(before,opnd,after) ((((before ^ opnd ^ after) & 0x1000) == 0x1000) ? (m_Registers.F |= FLAG_H) : (m_Registers.F &= ~FLAG_H))
 
 class Cpu : public ProcessingCore
 {

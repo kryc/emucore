@@ -90,7 +90,7 @@ with open('ClassOperations.txt', 'wt') as fh:
 		i[0]['operands'] = operands
 		i[0]['cycles'] = cycles
 
-		fh.write('\t/*{:s}*/ ssize_t {:s}(const struct Opcode& Opcode, ssize_t Ticks);\n'.format(hex(ix),methname))
+		fh.write('\t/*{:s}*/ ssize_t {:s}(const struct Opcode& Opcode, ssize_t Ticks, ssize_t& TicksRequired);\n'.format(hex(ix),methname))
 
 
 print('##### CallbackTable #####')
@@ -107,15 +107,15 @@ with open('CallbackTable.txt', 'wt') as fh:
 
 
 
-print('##### FUNCTION IMPLEMENTATIONS #####')
-with open('CpuOperations.cpp', 'wt') as fh:
-	fh.write('#include "Cpu.hpp"\n\n')
-	for ix,i in enumerate(ins):
-		d = i[0]
-		if 'operation' not in d:
-			continue
+# print('##### FUNCTION IMPLEMENTATIONS #####')
+# with open('CpuOperations.cpp', 'wt') as fh:
+# 	fh.write('#include "Cpu.hpp"\n\n')
+# 	for ix,i in enumerate(ins):
+# 		d = i[0]
+# 		if 'operation' not in d:
+# 			continue
 
-		code = "\tthrow std::runtime_error(\"Instruction {:s} not implemented\");".format(d['operation'] + ' ' + ','.join(d['operands']))
+# 		code = "\tthrow std::runtime_error(\"Instruction {:s} not implemented\");".format(d['operation'] + ' ' + ','.join(d['operands']))
 
 		# if len(d['operands']) == 1:
 		# 	if d['operation'] == 'INC' or d['operation'] == 'DEC':
@@ -158,11 +158,11 @@ with open('CpuOperations.cpp', 'wt') as fh:
 		# elif d['flags'][3] == '1':
 		# 	code += '\n\tm_Registers.F |= FLAG_CARR;'
 
-		code += '\n\treturn Opcode.TickCount;'.format(d['cycles'][0])
+		# code += '\n\treturn Opcode.TickCount;'.format(d['cycles'][0])
 
-		function = 'ssize_t\nCpu::{:s}(\n\tconst struct Opcode& Opcode,\n\tssize_t Tick\n\t)\n{{\n{:s}\n}}\n\n'.format(d['methname'], code)
+		# function = 'ssize_t\nCpu::{:s}(\n\tconst struct Opcode& Opcode,\n\tssize_t Tick\n\t)\n{{\n{:s}\n}}\n\n'.format(d['methname'], code)
 
-		fh.write( function )
+		# fh.write( function )
 
 
 
