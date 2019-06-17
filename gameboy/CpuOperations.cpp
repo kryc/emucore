@@ -620,7 +620,7 @@ Cpu::RRA(
  Cycles:	4/4
  --*/
 {
-	uint8_t carry = FLAG_SET_C() ? 0 : 0x80;
+	uint8_t carry = FLAG_IS_SET_C() ? 0 : 0x80;
 	uint8_t result = m_Registers.A;
 	if ((result & 0x1) != 0)
 	{
@@ -656,9 +656,10 @@ Cpu::JR_NZ_r8(
  Cycles:	12/8
  --*/
 {
-	if( !FLAG_SET_Z() )
+	if( !FLAG_IS_SET_Z() )
 	{
-		m_Registers.PC += IMM8();
+		int8_t immediate = (int8_t)IMM8();
+		m_Registers.PC += immediate + Opcode.InstructionWidth;
 		TickCount = Opcode.BranchTickCount;
 		return Opcode.BranchTickCount;
 	}
@@ -2476,7 +2477,7 @@ Cpu::ADC_A_C(
  --*/
 {
 	uint8_t operand = m_Registers.A;
-	if( FLAG_SET_C() )
+	if( FLAG_IS_SET_C() )
 		operand +=1;
 	
 	uint8_t before = m_Registers.A;

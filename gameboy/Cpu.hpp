@@ -118,10 +118,10 @@ struct Opcode
 #define SET_FLAG_N() (m_Registers.F |= FLAG_N)
 #define SET_FLAG_Z() (m_Registers.F |= FLAG_Z)
 
-#define FLAG_SET_H() ((m_Registers.F & FLAG_H) != 0)
-#define FLAG_SET_C() ((m_Registers.F & FLAG_C) != 0)
-#define FLAG_SET_N() ((m_Registers.F & FLAG_N) != 0)
-#define FLAG_SET_Z() ((m_Registers.F & FLAG_Z) != 0)
+#define FLAG_IS_SET_H() ((m_Registers.F & FLAG_H) != 0)
+#define FLAG_IS_SET_C() ((m_Registers.F & FLAG_C) != 0)
+#define FLAG_IS_SET_N() ((m_Registers.F & FLAG_N) != 0)
+#define FLAG_IS_SET_Z() ((m_Registers.F & FLAG_Z) != 0)
 
 #define RESET_FLAG_H() (m_Registers.F &= ~FLAG_H)
 #define RESET_FLAG_C() (m_Registers.F &= ~FLAG_C)
