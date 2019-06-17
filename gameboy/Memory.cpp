@@ -132,9 +132,9 @@ Memory::Get16(
 	)
 {
 	uint16_t ret;
-	ret = operator[](Address).Get();
+	ret = operator[](Address+1).Get();
 	ret <<= 8;
-	ret |= operator[](Address+1).Get();
+	ret |= operator[](Address).Get();
 	return ret;
 }
 
