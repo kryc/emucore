@@ -126,7 +126,7 @@ public:
 	Memory&		GetMemory(void) { return m_Memory; };
 	
 	/* The following are the opcode callback routines */
-#include "ClassOperations.txt";
+#include "ClassOperations.txt"
 private:
 	REGISTERS 	m_Registers{};
 	Memory 		m_Memory;
