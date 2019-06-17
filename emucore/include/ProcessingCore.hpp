@@ -15,10 +15,7 @@
 
 class ProcessingCore : public InterruptableCore, public Clock
 {
-public:
-	ProcessingCore();
-	void Cb(int Id);
-	void Tick(void);
+
 };
 
 #endif /* ProcessingCore_hpp */

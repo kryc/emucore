@@ -54,8 +54,9 @@ public:
 	MemoryAccessor(const size_t Address, uint8_t * const Value) :
 		m_Value(Value), m_Address(Address), m_ReadCallback(nullptr){};
 	MemoryAccessor(const size_t Address, uint8_t * const Value, OnMemoryReadCallback ReadCallback, OnMemoryWriteCallback WriteCallback) :
-	m_Value(Value), m_Address(Address), m_ReadCallback(ReadCallback), m_WriteCallback(WriteCallback){};
+		m_Value(Value), m_Address(Address), m_ReadCallback(ReadCallback), m_WriteCallback(WriteCallback){};
 	MemoryAccessor& operator=(const uint8_t Value);
+	MemoryAccessor operator++(int);
 	uint8_t Get(void);
 protected:
 	uint8_t * const 		m_Value;
@@ -73,7 +74,6 @@ public:
 	void 			LoadRom(std::string RomFile);
 	std::string 	GetRomName(void);
 	uint8_t 		GetRomType(void);
-//	uint8_t&		Get(const size_t Address);
 	uint16_t		Get16(const size_t Address);
 	MemoryAccessor  operator[] (const size_t Address);
 	uint8_t 		OnIoPortRead(const size_t Address);

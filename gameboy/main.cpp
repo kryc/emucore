@@ -10,15 +10,18 @@
 #include <chrono>
 #include <thread>
 
-#include "ProcessingCore.hpp"
-#include "Memory.hpp"
+#include "Cpu.hpp"
 
 int main(int argc, const char * argv[]) {
 	// insert code here...
 	
-	Memory m;
+	Cpu cpu;
+	cpu.SetFreq(4.0);
+	cpu.LoadRom(argv[1]);
+	cpu.Run();
 	
-	m.LoadRom(argv[1]);
+	
+	Memory& m = cpu.GetMemory();
 	
 	std::cerr << (int)m.Get16(0xff47) << std::endl;
 	
