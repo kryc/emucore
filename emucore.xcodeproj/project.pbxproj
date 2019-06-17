@@ -11,6 +11,9 @@
 		EE1DE01122B02D9800E227FB /* Clock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EE1DE00F22B02D9800E227FB /* Clock.cpp */; };
 		EE1DE01522B2C28100E227FB /* InterruptableCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EE1DE01322B2C28100E227FB /* InterruptableCore.cpp */; };
 		EE1DE01822B2C43F00E227FB /* ProcessingCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EE1DE01622B2C43F00E227FB /* ProcessingCore.cpp */; };
+		EE58ACD222B8045200A6114A /* Cpu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EE58ACCA22B8045100A6114A /* Cpu.cpp */; };
+		EE58ACD322B8045200A6114A /* Memory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EE58ACCC22B8045100A6114A /* Memory.cpp */; };
+		EE58ACD622B80C2C00A6114A /* CpuOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EE58ACD522B80C2C00A6114A /* CpuOperations.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -34,6 +37,14 @@
 		EE1DE01422B2C28100E227FB /* InterruptableCore.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = InterruptableCore.hpp; sourceTree = "<group>"; };
 		EE1DE01622B2C43F00E227FB /* ProcessingCore.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ProcessingCore.cpp; sourceTree = "<group>"; };
 		EE1DE01722B2C43F00E227FB /* ProcessingCore.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = ProcessingCore.hpp; sourceTree = "<group>"; };
+		EE58ACCA22B8045100A6114A /* Cpu.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Cpu.cpp; sourceTree = "<group>"; };
+		EE58ACCB22B8045100A6114A /* Cpu.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Cpu.hpp; sourceTree = "<group>"; };
+		EE58ACCC22B8045100A6114A /* Memory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Memory.cpp; sourceTree = "<group>"; };
+		EE58ACCD22B8045100A6114A /* Memory.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Memory.hpp; sourceTree = "<group>"; };
+		EE58ACCE22B8045200A6114A /* instruction_builder.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = instruction_builder.py; sourceTree = "<group>"; };
+		EE58ACCF22B8045200A6114A /* CallbackTable.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CallbackTable.txt; sourceTree = "<group>"; };
+		EE58ACD022B8045200A6114A /* ClassOperations.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ClassOperations.txt; sourceTree = "<group>"; };
+		EE58ACD522B80C2C00A6114A /* CpuOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CpuOperations.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,6 +90,14 @@
 			isa = PBXGroup;
 			children = (
 				EE1DE00622B02CF800E227FB /* main.cpp */,
+				EE58ACCF22B8045200A6114A /* CallbackTable.txt */,
+				EE58ACD022B8045200A6114A /* ClassOperations.txt */,
+				EE58ACCA22B8045100A6114A /* Cpu.cpp */,
+				EE58ACCB22B8045100A6114A /* Cpu.hpp */,
+				EE58ACD522B80C2C00A6114A /* CpuOperations.cpp */,
+				EE58ACCE22B8045200A6114A /* instruction_builder.py */,
+				EE58ACCC22B8045100A6114A /* Memory.cpp */,
+				EE58ACCD22B8045100A6114A /* Memory.hpp */,
 			);
 			path = gameboy;
 			sourceTree = "<group>";
@@ -149,9 +168,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EE58ACD322B8045200A6114A /* Memory.cpp in Sources */,
 				EE1DE01122B02D9800E227FB /* Clock.cpp in Sources */,
+				EE58ACD222B8045200A6114A /* Cpu.cpp in Sources */,
 				EE1DE01822B2C43F00E227FB /* ProcessingCore.cpp in Sources */,
 				EE1DE00722B02CF800E227FB /* main.cpp in Sources */,
+				EE58ACD622B80C2C00A6114A /* CpuOperations.cpp in Sources */,
 				EE1DE01522B2C28100E227FB /* InterruptableCore.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
