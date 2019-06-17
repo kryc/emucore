@@ -16,7 +16,11 @@ int main(int argc, const char * argv[]) {
 	// insert code here...
 	
 	Cpu cpu;
+#ifdef DEBUG
 	cpu.SetFreq(4.0);
+#else
+	cpu.SetFreqMhz(4.194304);
+#endif
 	cpu.LoadRom(argv[1]);
 	cpu.Run();
 	
