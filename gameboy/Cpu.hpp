@@ -93,7 +93,7 @@ typedef struct __attribute__((__packed__)){
 
 class Cpu;
 
-using OpcodeCallback = std::function<ssize_t(Cpu*, const struct Opcode&, ssize_t)>;
+using OpcodeCallback = std::function<ssize_t(Cpu*, const struct Opcode&, ssize_t, ssize_t&)>;
 
 struct Opcode
 {

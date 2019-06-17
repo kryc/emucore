@@ -8,6 +8,7 @@
 
 #include <map>
 #include <functional>
+#include <assert.h>
 #include "Cpu.hpp"
 
 static const std::map<int, struct Opcode> g_Instructions
@@ -46,26 +47,37 @@ Cpu::Tick(void)
  --*/
 {
 	static ssize_t  ticksTaken = 0;
+	static ssize_t	ticksInCurrentOp = 0;
 	static ssize_t  ticksRemaining = 0;
 	static uint16_t startingPC = 0;
-	static struct Opcode& opcode = (struct Opcode&)g_Instructions.at(0);
-	
-	auto callable = opcode.Callback;
+	static struct Opcode opcode{};
 	
 	if( ticksRemaining == 0 )
 	{
+		/* We have completed the previous operation (or it is the first op).
+		Read the new op and reset the counters */
+		assert(m_Registers.PC > 0 && m_Registers.PC < 0x8000);
+		std::cout << m_Registers.PC << "[" << (int)m_Memory[m_Registers.PC].Get() << "]" << std::endl;
 		startingPC = m_Registers.PC;
 		uint8_t nextOpcode = m_Memory[m_Registers.PC].Get();
 		opcode = g_Instructions.at(nextOpcode);
 		
 		ticksTaken = 0;
-		ticksRemaining = opcode.TickCount;
+		ticksInCurrentOp = opcode.TickCount;
+		ticksRemaining = ticksInCurrentOp;
 		
 		std::cout << opcode.DebugString << std::endl;
 	}
 	
-	ticksTaken += callable(this, opcode, ticksTaken);
-	ticksRemaining -= ticksTaken;
+	if( ticksTaken < ticksInCurrentOp )
+	{
+		auto callable = opcode.Callback;
+		/* We pass in ticksInCurrentOp byref as it can change if a branch is taken */
+		ticksTaken += callable(this, opcode, ticksTaken, ticksInCurrentOp);
+		assert(ticksTaken <= ticksInCurrentOp);
+	}
+
+	ticksRemaining--;
 	
 	if( ticksRemaining == 0 &&
 	   startingPC == m_Registers.PC )
