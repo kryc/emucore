@@ -271,7 +271,7 @@ Cpu::DEC_C(
 	CHK_SET_FLAG_Z(after);
 	CHK_SET_FLAG_H(before, operand, after);
 	
-	m_Registers.D = after;
+	m_Registers.C = after;
 	
 	return Opcode.TickCount;
 }
