@@ -113,20 +113,25 @@ struct Opcode
 #define FLAG_H (1 << 5) //set if carry occured from lower nibble in last op
 #define FLAG_C (1 << 4) //set if carry occurred or if reg A is smaller during CP op
 
-#define SET_FLAG_H() (m_Registers.F |= FLAG_H)
-#define SET_FLAG_C() (m_Registers.F |= FLAG_C)
-#define SET_FLAG_N() (m_Registers.F |= FLAG_N)
-#define SET_FLAG_Z() (m_Registers.F |= FLAG_Z)
+#define SET_FLAG_H() (m_Registers.F |= (FLAG_H))
+#define SET_FLAG_C() (m_Registers.F |= (FLAG_C))
+#define SET_FLAG_N() (m_Registers.F |= (FLAG_N))
+#define SET_FLAG_Z() (m_Registers.F |= (FLAG_Z))
 
-#define FLAG_IS_SET_H() ((m_Registers.F & FLAG_H) != 0)
-#define FLAG_IS_SET_C() ((m_Registers.F & FLAG_C) != 0)
-#define FLAG_IS_SET_N() ((m_Registers.F & FLAG_N) != 0)
-#define FLAG_IS_SET_Z() ((m_Registers.F & FLAG_Z) != 0)
+#define FLAG_IS_SET_H() ((m_Registers.F & FLAG_H) == (FLAG_H))
+#define FLAG_IS_SET_C() ((m_Registers.F & FLAG_C) == (FLAG_C))
+#define FLAG_IS_SET_N() ((m_Registers.F & FLAG_N) == (FLAG_N))
+#define FLAG_IS_SET_Z() ((m_Registers.F & FLAG_Z) == (FLAG_Z))
 
-#define RESET_FLAG_H() (m_Registers.F &= ~FLAG_H)
-#define RESET_FLAG_C() (m_Registers.F &= ~FLAG_C)
-#define RESET_FLAG_N() (m_Registers.F &= ~FLAG_N)
-#define RESET_FLAG_Z() (m_Registers.F &= ~FLAG_Z)
+#define FLAG_NOT_SET_H() ((m_Registers.F & FLAG_H) != (FLAG_H))
+#define FLAG_NOT_SET_C() ((m_Registers.F & FLAG_C) != (FLAG_C))
+#define FLAG_NOT_SET_N() ((m_Registers.F & FLAG_N) != (FLAG_N))
+#define FLAG_NOT_SET_Z() ((m_Registers.F & FLAG_Z) != (FLAG_Z))
+
+#define RESET_FLAG_H() (m_Registers.F &= ~(FLAG_H))
+#define RESET_FLAG_C() (m_Registers.F &= ~(FLAG_C))
+#define RESET_FLAG_N() (m_Registers.F &= ~(FLAG_N))
+#define RESET_FLAG_Z() (m_Registers.F &= ~(FLAG_Z))
 
 #define PUSH_16(val) m_Memory[m_Registers.SP-1] = (val) >> 8; \
 						m_Memory[m_Registers.SP-2] = (val) & 0x0f; \
@@ -138,12 +143,12 @@ struct Opcode
 #define IMM8() (m_Memory[m_Registers.PC+1].Get())
 #define IMM16() (m_Memory.Get16(m_Registers.PC+1))
 
-#define CHK_SET_FLAG_C(before,opnd,after) ((((before ^ opnd ^ after) & 0x100) == 0x100) ? (m_Registers.F |= FLAG_C):(m_Registers.F &= ~FLAG_C))
-#define CHK_SET_FLAG_H(before,opnd,after) ((((before ^ opnd ^ after) & 0x10) == 0x10) ? (m_Registers.F |= FLAG_H) : (m_Registers.F &= ~FLAG_H))
-#define CHK_SET_FLAG_Z(after) ((after==0)? (m_Registers.F |= FLAG_Z) : (m_Registers.F &= ~FLAG_Z))
+#define CHK_SET_FLAG_C(before,opnd,after) ((((before ^ opnd ^ after) & 0x100) == 0x100) ? (SET_FLAG_C()) : (RESET_FLAG_C()))
+#define CHK_SET_FLAG_H(before,opnd,after) ((((before ^ opnd ^ after) & 0x10) == 0x10) ? (SET_FLAG_H()) : (RESET_FLAG_H()))
+#define CHK_SET_FLAG_Z(after) ((after==0)? (SET_FLAG_Z()) : (RESET_FLAG_Z()))
 
-#define CHK_SET_FLAG_C_16(before,opnd,after) (((( after & 0x10000) > 0) ? (m_Registers.F |= FLAG_C):(m_Registers.F &= ~FLAG_C)))
-#define CHK_SET_FLAG_H_16(before,opnd,after) ((((before ^ opnd ^ after) & 0x1000) == 0x1000) ? (m_Registers.F |= FLAG_H) : (m_Registers.F &= ~FLAG_H))
+#define CHK_SET_FLAG_C_16(before,opnd,after) (((( after & 0x10000) > 0) ? (SET_FLAG_C()) : (RESET_FLAG_C()))
+#define CHK_SET_FLAG_H_16(before,opnd,after) ((((before ^ opnd ^ after) & 0x1000) == 0x1000) ? (SET_FLAG_H()) : (RESET_FLAG_H()))
 
 class Cpu : public ProcessingCore
 {

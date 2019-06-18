@@ -656,7 +656,7 @@ Cpu::JR_NZ_r8(
  Cycles:	12/8
  --*/
 {
-	if( !FLAG_IS_SET_Z() )
+	if( FLAG_NOT_SET_Z() )
 	{
 		int8_t immediate = (int8_t)IMM8();
 		m_Registers.PC += immediate + Opcode.InstructionWidth;
