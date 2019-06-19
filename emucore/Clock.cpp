@@ -12,15 +12,25 @@
 #include <ratio>
 #include <cmath>
 #include <unistd.h>
-
+#include <stdio.h>
 #include "Clock.hpp"
 
 void
 Clock::SetFreq(double Hz)
 {
+	// double min_freq = (double)std::chrono::high_resolution_clock::period::num /   
+	// 		std::chrono::high_resolution_clock::period::den;
+
 	m_Freq = Hz;
 	m_TickTime = 1/Hz;
 	m_TickTimeUs = std::round(m_TickTime*1000*1000);
+
+	// printf("%.10f %.10f\n", m_TickTime, min_freq);
+	// exit(0);
+	// if( m_TickTime < min_freq )
+	// {
+	// 	throw std::runtime_error("Cannot support frequency");
+	// }
 #ifdef DEBUG
 	std::cerr << "Setting Frequency: " << m_Freq << " Hz" << std::endl;
 	std::cerr << "New Tick Time: " << m_TickTime << " s" << std::endl;
@@ -47,6 +57,8 @@ Clock::SetFreqMhz(double MHz)
 void
 Clock::Run(void)
 {
+	int sleepFudge = 0;
+	
 	for(;;){
 		auto start = std::chrono::steady_clock::now();
 		this->Tick();
@@ -54,9 +66,9 @@ Clock::Run(void)
 		std::chrono::duration<double> diff = end-start;
 		
 		double timeInTick = std::chrono::duration_cast<std::chrono::microseconds>(diff).count();
-		double sleepTime = m_TickTimeUs - timeInTick;
+		int sleepTime = (int)std::round(m_TickTimeUs - timeInTick);
 		
-		if( sleepTime < -5.0 )
+		if( sleepTime < -5 )
 		{
 			/* We missed our tick! */
 			m_MissedTicks++;
@@ -67,12 +79,20 @@ Clock::Run(void)
 		}
 		else
 		{
-			if( sleepTime > 1.0 )
+
+			if( sleepTime - sleepFudge > 1 )
 			{
 				/* We need to sleep! */
-				int usecs = (int)std::round(sleepTime);
-				usleep(usecs);
+				usleep(sleepTime - sleepFudge);
 			}
+
+			auto end = std::chrono::steady_clock::now();
+			std::chrono::duration<double> diff = end-start;
+			float totalTimeInCycleWithSleep = std::chrono::duration_cast<std::chrono::microseconds>(diff).count();
+			int marginOfTickError = (int)std::round(m_TickTimeUs - totalTimeInCycleWithSleep);
+
+			sleepFudge -= marginOfTickError;
+			
 			/* No sleeping to do */
 			continue;
 		}
