@@ -104,6 +104,15 @@ struct Opcode
 	size_t			TickCount;
 };
 
+typedef enum{
+	Enabled,
+	DisableRequested,
+	DisablePending,
+	Disabled,
+	EnableRequested,
+	EnablePending,
+} InterruptState;
+
 #define OPCODE_CALLBACK_NAME(OpcodeNum) Callback##OpcodeNum
 #define OPCODE_CALLBACK(OpcodeNum) ssize_t Callback##OpcodeNum(uint8_t* PC, ssize_t Ticks)
 #define OPCODE_PROTO(OpcodeNum)ssize_t Cpu::Callback##OpcodeNum(uint8_t* PC, ssize_t Ticks)
@@ -133,16 +142,6 @@ struct Opcode
 #define RESET_FLAG_N() (m_Registers.F &= ~(FLAG_N))
 #define RESET_FLAG_Z() (m_Registers.F &= ~(FLAG_Z))
 
-#define PUSH_16(val) m_Memory[m_Registers.SP-1] = (val) >> 8; \
-						m_Memory[m_Registers.SP-2] = (val) & 0x0f; \
-						m_Registers.SP -= 2; \
-
-#define PUSH_8(val) m_Memory[m_Registers.SP-1] = (val) & 0xf; \
-						m_Registers.SP -= 1; \
-
-#define IMM8() (m_Memory[m_Registers.PC+1].Get())
-#define IMM16() (m_Memory.Get16(m_Registers.PC+1))
-
 #define CHK_SET_FLAG_C(before,opnd,after) ((((before ^ opnd ^ after) & 0x100) == 0x100) ? (SET_FLAG_C()) : (RESET_FLAG_C()))
 #define CHK_SET_FLAG_H(before,opnd,after) ((((before ^ opnd ^ after) & 0x10) == 0x10) ? (SET_FLAG_H()) : (RESET_FLAG_H()))
 #define CHK_SET_FLAG_Z(after) ((after==0)? (SET_FLAG_Z()) : (RESET_FLAG_Z()))
@@ -162,9 +161,19 @@ public:
 	/* The following are the opcode callback routines */
 #include "ClassOperations.txt"
 private:
-	std::string FormatDebugString(std::string DebugString);
-	REGISTERS 	m_Registers{};
-	Memory 		m_Memory;
+	/* Utility functions for opcode emulation */
+	void 		Push(uint16_t Value);
+	void 		Push(uint8_t Value);
+	uint8_t 	Immediate8(void);
+	uint16_t 	Immediate16(void);
+
+	/* Private functions */
+	std::string 	FormatDebugString(std::string DebugString);
+
+	/* Private variables */
+	REGISTERS 		m_Registers{};
+	Memory 			m_Memory;
+	InterruptState 	m_InterruptState = Enabled;
 };
 
 #endif /* Cpu_hpp */

@@ -32,6 +32,37 @@ Cpu::Cpu()
 }
 
 void
+Cpu::Push(
+	uint16_t Value
+	)
+{
+	m_Memory[m_Registers.SP-1] = (Value >> 8);
+	m_Memory[m_Registers.SP-2] = (Value & 0xff);
+	m_Registers.SP -= 2;
+}
+
+void
+Cpu::Push(
+	uint8_t Value
+	)
+{
+	m_Memory[m_Registers.SP-1] = (Value & 0xff);
+	m_Registers.SP -= 1;
+}
+
+uint8_t
+Cpu::Immediate8(void)
+{
+	return m_Memory[m_Registers.PC+1].Get();
+}
+
+uint16_t
+Cpu::Immediate16(void)
+{
+	return m_Memory.Get16(m_Registers.PC+1);
+}
+
+void
 Cpu::Run(void)
 {
 #ifdef NOCLOCK
@@ -56,7 +87,7 @@ Cpu::FormatDebugString(
 		found = DebugString.find("r16");
 	if ( found != std::string::npos ){
 		std::stringstream stream;
-		stream << "0x" << std::hex << (int)IMM16();
+		stream << "0x" << std::hex << (int)Immediate16();
 		DebugString.replace(found, 3, stream.str());
 	}
 	found = DebugString.find("a8");
@@ -66,7 +97,7 @@ Cpu::FormatDebugString(
 		found = DebugString.find("r8");
 	if ( found != std::string::npos ){
 		std::stringstream stream;
-		stream << "0x" << std::hex << (int)IMM8();
+		stream << "0x" << std::hex << (int)Immediate8();
 		DebugString.replace(found, 2, stream.str());
 	}
 	return DebugString;
@@ -101,10 +132,34 @@ Cpu::Tick(void)
 		ticksInCurrentOp = opcode.TickCount;
 		ticksUsed = 0;
 		assert(opcode.TickCount <= opcode.BranchTickCount);
+
+		/* Handle interrupt state */
+		switch( m_InterruptState )
+		{
+			case DisableRequested:
+				m_InterruptState = DisablePending;
+				break;
+			case DisablePending:
+				m_InterruptState = Disabled;
+				break;
+			case EnableRequested:
+				m_InterruptState = EnablePending;
+				break;
+			case EnablePending:
+				m_InterruptState = Enabled;
+				break;
+			case Enabled:
+			case Disabled:
+				/* No special handling required */
+				break;
+			default:
+				throw std::runtime_error("Invalid CPU interrupt state");
+				break;
+		}
 		
 #ifdef DEBUG
 		/* Patch up the debug string */
-//		std::cout << FormatDebugString(opcode.DebugString) << std::endl;
+		std::cout << FormatDebugString(opcode.DebugString) << std::endl;
 #endif
 	}
 	
