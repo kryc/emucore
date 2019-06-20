@@ -34,7 +34,14 @@ Cpu::Cpu()
 void
 Cpu::Run(void)
 {
+#ifdef NOCLOCK
+	for( ;; )
+	{
+		Tick();
+	}
+#else
 	Clock::Run();
+#endif
 }
 
 std::string
