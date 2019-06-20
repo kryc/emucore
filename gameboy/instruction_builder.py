@@ -112,7 +112,7 @@ with open('CpuOperations.cpp', 'wt') as fh:
 		if 'operation' not in d:
 			continue
 
-		commentblock = "/*++\n Operation:\t{:s}\n Opcode:\t{:s}\n Width:\t\t{:s}\n Cycles:\t{:s}/{:s}\n Flags:\t\t{:s} --*/\n".format(d['opstring'], hex(d['instruction']), d['width'], d['cycles'][0], d['cycles'][1], ' '.join(d['flags']))
+		commentblock = "/*++\n Operation:\t{:s}\n Opcode:\t{:s}\n Width:\t\t{:s}\n Cycles:\t{:s}/{:s}\n Flags:\t\t{:s}\n --*/\n".format(d['opstring'], hex(d['instruction']), d['width'], d['cycles'][0], d['cycles'][1], ' '.join(d['flags']))
 
 		code = "\tthrow std::runtime_error(\"Instruction {:s} not implemented\");".format(d['opstring'])
 

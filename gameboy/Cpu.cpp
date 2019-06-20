@@ -97,7 +97,7 @@ Cpu::Tick(void)
 		
 #ifdef DEBUG
 		/* Patch up the debug string */
-		std::cout << FormatDebugString(opcode.DebugString) << std::endl;
+//		std::cout << FormatDebugString(opcode.DebugString) << std::endl;
 #endif
 	}
 	
