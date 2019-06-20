@@ -78,6 +78,7 @@ public:
 	MemoryAccessor  operator[] (const size_t Address);
 	uint8_t 		OnIoPortRead(const size_t Address);
 	void	 		OnIoPortWrite(const size_t Address, const uint8_t Value);
+	void	 		OnReadOnlyWrite(const size_t Address, const uint8_t Value);
 private:
 	std::FILE*						m_Rom;
 	size_t							m_RomSize;

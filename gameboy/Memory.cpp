@@ -167,6 +167,15 @@ Memory::OnIoPortWrite(
 	m_Memory[Address] = Value;
 }
 
+void
+Memory::OnReadOnlyWrite(
+	const size_t Address,
+	const uint8_t Value
+	)
+{
+	std::runtime_error("Caught write to read only memory");
+}
+
 MemoryAccessor
 Memory::operator[] (
 	const size_t Address
@@ -175,7 +184,11 @@ Memory::operator[] (
 	/* Read from ROM range */
 	if( Address >= 0 && Address <= 0x4000 )
 	{
-		return MemoryAccessor(Address, (uint8_t * const)&m_MmappedRom[Address]);
+		// We pass a handler to the write accessor to catch writes to ROM range
+		return MemoryAccessor(Address,
+							  (uint8_t * const)&m_MmappedRom[Address],
+							  nullptr,
+							  (std::bind(&Memory::OnReadOnlyWrite, this, std::placeholders::_1, std::placeholders::_2)));
 	}
 	
 	/* Emulate the echo region */
