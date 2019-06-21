@@ -204,7 +204,16 @@ Cpu::ADD_HL_BC(
  Flags:		- 0 H C
  --*/
 {
-	throw std::runtime_error("Instruction ADD HL,BC not implemented");
+	uint16_t operand = m_Registers.BC;
+	uint16_t before = m_Registers.HL;
+	uint16_t after = before + operand;
+
+	RESET_FLAG_N();
+	CHK_SET_FLAG_H_16(before, operand, after);
+	CHK_SET_FLAG_C_16(before, operand, after);
+
+	m_Registers.HL = after;
+
 	return Opcode.TickCount;
 }
 
@@ -222,7 +231,7 @@ Cpu::LD_A__BC_(
  Flags:		- - - -
  --*/
 {
-	m_Registers.A = m_Memory[m_Registers.BC];
+	m_Registers.A = m_Memory[m_Registers.BC].Get();
 
 	return Opcode.TickCount;
 }
@@ -540,7 +549,16 @@ Cpu::ADD_HL_DE(
  Flags:		- 0 H C
  --*/
 {
-	throw std::runtime_error("Instruction ADD HL,DE not implemented");
+	uint16_t operand = m_Registers.DE;
+	uint16_t before = m_Registers.HL;
+	uint16_t after = before + operand;
+
+	RESET_FLAG_N();
+	CHK_SET_FLAG_H_16(before, operand, after);
+	CHK_SET_FLAG_C_16(before, operand, after);
+
+	m_Registers.HL = after;
+
 	return Opcode.TickCount;
 }
 
@@ -558,7 +576,7 @@ Cpu::LD_A__DE_(
  Flags:		- - - -
  --*/
 {
-	m_Registers.A = m_Memory[m_Registers.DE];
+	m_Registers.A = m_Memory[m_Registers.DE].Get();
 
 	return Opcode.TickCount;
 }
@@ -902,7 +920,16 @@ Cpu::ADD_HL_HL(
  Flags:		- 0 H C
  --*/
 {
-	throw std::runtime_error("Instruction ADD HL,HL not implemented");
+	uint16_t operand = m_Registers.HL;
+	uint16_t before = m_Registers.HL;
+	uint16_t after = before + operand;
+
+	RESET_FLAG_N();
+	CHK_SET_FLAG_H_16(before, operand, after);
+	CHK_SET_FLAG_C_16(before, operand, after);
+
+	m_Registers.HL = after;
+
 	return Opcode.TickCount;
 }
 
@@ -1215,7 +1242,16 @@ Cpu::ADD_HL_SP(
  Flags:		- 0 H C
  --*/
 {
-	throw std::runtime_error("Instruction ADD HL,SP not implemented");
+	uint16_t operand = m_Registers.SP;
+	uint16_t before = m_Registers.HL;
+	uint16_t after = before + operand;
+
+	RESET_FLAG_N();
+	CHK_SET_FLAG_H_16(before, operand, after);
+	CHK_SET_FLAG_C_16(before, operand, after);
+
+	m_Registers.HL = after;
+
 	return Opcode.TickCount;
 }
 
@@ -1233,7 +1269,9 @@ Cpu::LD_A__HLmin_(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD A,(HL-) not implemented");
+	m_Registers.A = m_Memory[m_Registers.HL].Get();
+	m_Registers.HL--;
+
 	return Opcode.TickCount;
 }
 
@@ -1252,7 +1290,7 @@ Cpu::DEC_SP(
  --*/
 {
 	m_Registers.SP--;
-	
+
 	return Opcode.TickCount;
 }
 
@@ -1361,7 +1399,8 @@ Cpu::LD_B_B(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD B,B not implemented");
+	// m_Registers.B = m_Registers.B;
+
 	return Opcode.TickCount;
 }
 
@@ -1379,7 +1418,8 @@ Cpu::LD_B_C(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD B,C not implemented");
+	m_Registers.B = m_Registers.C;
+
 	return Opcode.TickCount;
 }
 
@@ -1397,7 +1437,8 @@ Cpu::LD_B_D(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD B,D not implemented");
+	m_Registers.B = m_Registers.D;
+
 	return Opcode.TickCount;
 }
 
@@ -1415,7 +1456,8 @@ Cpu::LD_B_E(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD B,E not implemented");
+	m_Registers.B = m_Registers.E;
+
 	return Opcode.TickCount;
 }
 
@@ -1433,7 +1475,8 @@ Cpu::LD_B_H(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD B,H not implemented");
+	m_Registers.B = m_Registers.H;
+
 	return Opcode.TickCount;
 }
 
@@ -1451,7 +1494,8 @@ Cpu::LD_B_L(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD B,L not implemented");
+	m_Registers.B = m_Registers.L;
+
 	return Opcode.TickCount;
 }
 
@@ -1469,7 +1513,8 @@ Cpu::LD_B__HL_(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD B,(HL) not implemented");
+	m_Registers.B = m_Memory[m_Registers.HL].Get();
+
 	return Opcode.TickCount;
 }
 
@@ -1487,7 +1532,8 @@ Cpu::LD_B_A(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD B,A not implemented");
+	m_Registers.B = m_Registers.A;
+
 	return Opcode.TickCount;
 }
 
@@ -1505,7 +1551,8 @@ Cpu::LD_C_B(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD C,B not implemented");
+	m_Registers.C = m_Registers.B;
+
 	return Opcode.TickCount;
 }
 
@@ -1523,7 +1570,8 @@ Cpu::LD_C_C(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD C,C not implemented");
+	// m_Registers.C = m_Registers.C;
+
 	return Opcode.TickCount;
 }
 
@@ -1541,7 +1589,8 @@ Cpu::LD_C_D(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD C,D not implemented");
+	m_Registers.C = m_Registers.D;
+
 	return Opcode.TickCount;
 }
 
@@ -1559,7 +1608,8 @@ Cpu::LD_C_E(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD C,E not implemented");
+	m_Registers.C = m_Registers.E;
+
 	return Opcode.TickCount;
 }
 
@@ -1577,7 +1627,8 @@ Cpu::LD_C_H(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD C,H not implemented");
+	m_Registers.C = m_Registers.H;
+
 	return Opcode.TickCount;
 }
 
@@ -1595,7 +1646,8 @@ Cpu::LD_C_L(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD C,L not implemented");
+	m_Registers.C = m_Registers.L;
+
 	return Opcode.TickCount;
 }
 
@@ -1613,7 +1665,8 @@ Cpu::LD_C__HL_(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD C,(HL) not implemented");
+	m_Registers.C = m_Memory[m_Registers.HL].Get();
+
 	return Opcode.TickCount;
 }
 
@@ -1631,7 +1684,8 @@ Cpu::LD_C_A(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD C,A not implemented");
+	m_Registers.C = m_Registers.A;
+
 	return Opcode.TickCount;
 }
 
@@ -1649,7 +1703,8 @@ Cpu::LD_D_B(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD D,B not implemented");
+	m_Registers.D = m_Registers.B;
+
 	return Opcode.TickCount;
 }
 
@@ -1667,7 +1722,8 @@ Cpu::LD_D_C(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD D,C not implemented");
+	m_Registers.D = m_Registers.C;
+
 	return Opcode.TickCount;
 }
 
@@ -1685,7 +1741,8 @@ Cpu::LD_D_D(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD D,D not implemented");
+	// m_Registers.D = m_Registers.D;
+
 	return Opcode.TickCount;
 }
 
@@ -1703,7 +1760,8 @@ Cpu::LD_D_E(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD D,E not implemented");
+	m_Registers.D = m_Registers.E;
+
 	return Opcode.TickCount;
 }
 
@@ -1721,7 +1779,8 @@ Cpu::LD_D_H(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD D,H not implemented");
+	m_Registers.D = m_Registers.H;
+
 	return Opcode.TickCount;
 }
 
@@ -1739,7 +1798,8 @@ Cpu::LD_D_L(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD D,L not implemented");
+	m_Registers.D = m_Registers.L;
+
 	return Opcode.TickCount;
 }
 
@@ -1757,7 +1817,8 @@ Cpu::LD_D__HL_(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD D,(HL) not implemented");
+	m_Registers.D = m_Memory[m_Registers.HL].Get();
+
 	return Opcode.TickCount;
 }
 
@@ -1775,7 +1836,8 @@ Cpu::LD_D_A(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD D,A not implemented");
+	m_Registers.D = m_Registers.A;
+
 	return Opcode.TickCount;
 }
 
@@ -1793,7 +1855,8 @@ Cpu::LD_E_B(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD E,B not implemented");
+	m_Registers.E = m_Registers.B;
+
 	return Opcode.TickCount;
 }
 
@@ -1811,7 +1874,8 @@ Cpu::LD_E_C(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD E,C not implemented");
+	m_Registers.E = m_Registers.C;
+
 	return Opcode.TickCount;
 }
 
@@ -1829,7 +1893,8 @@ Cpu::LD_E_D(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD E,D not implemented");
+	m_Registers.E = m_Registers.D;
+
 	return Opcode.TickCount;
 }
 
@@ -1847,7 +1912,8 @@ Cpu::LD_E_E(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD E,E not implemented");
+	// m_Registers.E = m_Registers.E;
+
 	return Opcode.TickCount;
 }
 
@@ -1865,7 +1931,8 @@ Cpu::LD_E_H(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD E,H not implemented");
+	m_Registers.E = m_Registers.H;
+
 	return Opcode.TickCount;
 }
 
@@ -1883,7 +1950,8 @@ Cpu::LD_E_L(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD E,L not implemented");
+	m_Registers.E = m_Registers.L;
+
 	return Opcode.TickCount;
 }
 
@@ -1901,7 +1969,8 @@ Cpu::LD_E__HL_(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD E,(HL) not implemented");
+	m_Registers.E = m_Memory[m_Registers.HL].Get();
+
 	return Opcode.TickCount;
 }
 
@@ -1919,7 +1988,8 @@ Cpu::LD_E_A(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD E,A not implemented");
+	m_Registers.E = m_Registers.A;
+
 	return Opcode.TickCount;
 }
 
@@ -1937,7 +2007,8 @@ Cpu::LD_H_B(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD H,B not implemented");
+	m_Registers.H = m_Registers.B;
+
 	return Opcode.TickCount;
 }
 
@@ -1955,7 +2026,8 @@ Cpu::LD_H_C(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD H,C not implemented");
+	m_Registers.H = m_Registers.C;
+
 	return Opcode.TickCount;
 }
 
@@ -1973,7 +2045,8 @@ Cpu::LD_H_D(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD H,D not implemented");
+	m_Registers.H = m_Registers.D;
+
 	return Opcode.TickCount;
 }
 
@@ -1991,7 +2064,8 @@ Cpu::LD_H_E(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD H,E not implemented");
+	m_Registers.H = m_Registers.E;
+
 	return Opcode.TickCount;
 }
 
@@ -2009,7 +2083,8 @@ Cpu::LD_H_H(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD H,H not implemented");
+	// m_Registers.H = m_Registers.H;
+
 	return Opcode.TickCount;
 }
 
@@ -2027,7 +2102,8 @@ Cpu::LD_H_L(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD H,L not implemented");
+	m_Registers.H = m_Registers.L;
+
 	return Opcode.TickCount;
 }
 
@@ -2045,7 +2121,8 @@ Cpu::LD_H__HL_(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD H,(HL) not implemented");
+	m_Registers.H = m_Memory[m_Registers.HL].Get();
+
 	return Opcode.TickCount;
 }
 
@@ -2063,7 +2140,8 @@ Cpu::LD_H_A(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD H,A not implemented");
+	m_Registers.H = m_Registers.A;
+
 	return Opcode.TickCount;
 }
 
@@ -2081,7 +2159,8 @@ Cpu::LD_L_B(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD L,B not implemented");
+	m_Registers.L = m_Registers.B;
+
 	return Opcode.TickCount;
 }
 
@@ -2099,7 +2178,8 @@ Cpu::LD_L_C(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD L,C not implemented");
+	m_Registers.L = m_Registers.C;
+
 	return Opcode.TickCount;
 }
 
@@ -2117,7 +2197,8 @@ Cpu::LD_L_D(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD L,D not implemented");
+	m_Registers.L = m_Registers.D;
+
 	return Opcode.TickCount;
 }
 
@@ -2135,7 +2216,8 @@ Cpu::LD_L_E(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD L,E not implemented");
+	m_Registers.L = m_Registers.E;
+
 	return Opcode.TickCount;
 }
 
@@ -2153,7 +2235,8 @@ Cpu::LD_L_H(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD L,H not implemented");
+	m_Registers.L = m_Registers.H;
+
 	return Opcode.TickCount;
 }
 
@@ -2171,7 +2254,8 @@ Cpu::LD_L_L(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD L,L not implemented");
+	// m_Registers.L = m_Registers.L;
+
 	return Opcode.TickCount;
 }
 
@@ -2189,7 +2273,8 @@ Cpu::LD_L__HL_(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD L,(HL) not implemented");
+	m_Registers.L = m_Memory[m_Registers.HL].Get();
+
 	return Opcode.TickCount;
 }
 
@@ -2207,7 +2292,8 @@ Cpu::LD_L_A(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD L,A not implemented");
+	m_Registers.L = m_Registers.A;
+
 	return Opcode.TickCount;
 }
 
@@ -2225,7 +2311,8 @@ Cpu::LD__HL__B(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD (HL),B not implemented");
+	m_Memory[m_Registers.HL] = m_Registers.B;
+
 	return Opcode.TickCount;
 }
 
@@ -2243,7 +2330,8 @@ Cpu::LD__HL__C(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD (HL),C not implemented");
+	m_Memory[m_Registers.HL] = m_Registers.C;
+
 	return Opcode.TickCount;
 }
 
@@ -2261,7 +2349,8 @@ Cpu::LD__HL__D(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD (HL),D not implemented");
+	m_Memory[m_Registers.HL] = m_Registers.D;
+
 	return Opcode.TickCount;
 }
 
@@ -2279,7 +2368,8 @@ Cpu::LD__HL__E(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD (HL),E not implemented");
+	m_Memory[m_Registers.HL] = m_Registers.E;
+
 	return Opcode.TickCount;
 }
 
@@ -2297,7 +2387,8 @@ Cpu::LD__HL__H(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD (HL),H not implemented");
+	m_Memory[m_Registers.HL] = m_Registers.H;
+
 	return Opcode.TickCount;
 }
 
@@ -2315,7 +2406,8 @@ Cpu::LD__HL__L(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD (HL),L not implemented");
+	m_Memory[m_Registers.HL] = m_Registers.L;
+
 	return Opcode.TickCount;
 }
 
@@ -2351,7 +2443,8 @@ Cpu::LD__HL__A(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD (HL),A not implemented");
+	m_Memory[m_Registers.HL] = m_Registers.A;
+
 	return Opcode.TickCount;
 }
 
@@ -2369,7 +2462,8 @@ Cpu::LD_A_B(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD A,B not implemented");
+	m_Registers.A = m_Registers.B;
+
 	return Opcode.TickCount;
 }
 
@@ -2387,7 +2481,8 @@ Cpu::LD_A_C(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD A,C not implemented");
+	m_Registers.A = m_Registers.C;
+
 	return Opcode.TickCount;
 }
 
@@ -2426,7 +2521,8 @@ Cpu::LD_A_E(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD A,E not implemented");
+	m_Registers.A = m_Registers.E;
+
 	return Opcode.TickCount;
 }
 
@@ -2444,7 +2540,8 @@ Cpu::LD_A_H(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD A,H not implemented");
+	m_Registers.A = m_Registers.H;
+
 	return Opcode.TickCount;
 }
 
@@ -2462,7 +2559,8 @@ Cpu::LD_A_L(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD A,L not implemented");
+	m_Registers.A = m_Registers.L;
+
 	return Opcode.TickCount;
 }
 
@@ -2480,7 +2578,8 @@ Cpu::LD_A__HL_(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD A,(HL) not implemented");
+	m_Registers.A = m_Memory[m_Registers.HL].Get();
+
 	return Opcode.TickCount;
 }
 
@@ -2498,7 +2597,8 @@ Cpu::LD_A_A(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD A,A not implemented");
+	// m_Registers.A = m_Registers.A;
+
 	return Opcode.TickCount;
 }
 
@@ -2516,7 +2616,16 @@ Cpu::ADD_A_B(
  Flags:		Z 0 H C
  --*/
 {
-	throw std::runtime_error("Instruction ADD A,B not implemented");
+	uint8_t before = m_Registers.A;
+	uint8_t operand = m_Registers.B;
+	uint8_t after = m_Registers.A + operand;
+	
+	CHK_SET_FLAG_Z(after);
+	RESET_FLAG_N();
+	CHK_SET_FLAG_H(before, operand, after);
+	CHK_SET_FLAG_C(before, operand, after);
+	
+	m_Registers.A = after;
 	return Opcode.TickCount;
 }
 
@@ -2534,7 +2643,17 @@ Cpu::ADD_A_C(
  Flags:		Z 0 H C
  --*/
 {
-	throw std::runtime_error("Instruction ADD A,C not implemented");
+	uint8_t before = m_Registers.A;
+	uint8_t operand = m_Registers.C;
+	uint8_t after = m_Registers.A + operand;
+	
+	CHK_SET_FLAG_Z(after);
+	RESET_FLAG_N();
+	CHK_SET_FLAG_H(before, operand, after);
+	CHK_SET_FLAG_C(before, operand, after);
+	
+	m_Registers.A = after;
+
 	return Opcode.TickCount;
 }
 
@@ -2552,7 +2671,17 @@ Cpu::ADD_A_D(
  Flags:		Z 0 H C
  --*/
 {
-	throw std::runtime_error("Instruction ADD A,D not implemented");
+	uint8_t before = m_Registers.A;
+	uint8_t operand = m_Registers.C;
+	uint8_t after = m_Registers.A + operand;
+	
+	CHK_SET_FLAG_Z(after);
+	RESET_FLAG_N();
+	CHK_SET_FLAG_H(before, operand, after);
+	CHK_SET_FLAG_C(before, operand, after);
+	
+	m_Registers.A = after;
+
 	return Opcode.TickCount;
 }
 
@@ -2570,7 +2699,17 @@ Cpu::ADD_A_E(
  Flags:		Z 0 H C
  --*/
 {
-	throw std::runtime_error("Instruction ADD A,E not implemented");
+	uint8_t before = m_Registers.A;
+	uint8_t operand = m_Registers.E;
+	uint8_t after = m_Registers.A + operand;
+	
+	CHK_SET_FLAG_Z(after);
+	RESET_FLAG_N();
+	CHK_SET_FLAG_H(before, operand, after);
+	CHK_SET_FLAG_C(before, operand, after);
+	
+	m_Registers.A = after;
+
 	return Opcode.TickCount;
 }
 
@@ -2588,7 +2727,17 @@ Cpu::ADD_A_H(
  Flags:		Z 0 H C
  --*/
 {
-	throw std::runtime_error("Instruction ADD A,H not implemented");
+	uint8_t before = m_Registers.A;
+	uint8_t operand = m_Registers.H;
+	uint8_t after = m_Registers.A + operand;
+	
+	CHK_SET_FLAG_Z(after);
+	RESET_FLAG_N();
+	CHK_SET_FLAG_H(before, operand, after);
+	CHK_SET_FLAG_C(before, operand, after);
+	
+	m_Registers.A = after;
+
 	return Opcode.TickCount;
 }
 
@@ -2606,7 +2755,16 @@ Cpu::ADD_A_L(
  Flags:		Z 0 H C
  --*/
 {
-	throw std::runtime_error("Instruction ADD A,L not implemented");
+	uint8_t before = m_Registers.A;
+	uint8_t operand = m_Registers.L;
+	uint8_t after = m_Registers.A + operand;
+	
+	CHK_SET_FLAG_Z(after);
+	RESET_FLAG_N();
+	CHK_SET_FLAG_H(before, operand, after);
+	CHK_SET_FLAG_C(before, operand, after);
+	
+	m_Registers.A = after;
 	return Opcode.TickCount;
 }
 
@@ -2624,7 +2782,17 @@ Cpu::ADD_A__HL_(
  Flags:		Z 0 H C
  --*/
 {
-	throw std::runtime_error("Instruction ADD A,(HL) not implemented");
+	uint8_t before = m_Registers.A;
+	uint8_t operand = m_Memory[m_Registers.HL].Get();
+	uint8_t after = m_Registers.A + operand;
+	
+	CHK_SET_FLAG_Z(after);
+	RESET_FLAG_N();
+	CHK_SET_FLAG_H(before, operand, after);
+	CHK_SET_FLAG_C(before, operand, after);
+	
+	m_Registers.A = after;
+
 	return Opcode.TickCount;
 }
 
@@ -2642,7 +2810,17 @@ Cpu::ADD_A_A(
  Flags:		Z 0 H C
  --*/
 {
-	throw std::runtime_error("Instruction ADD A,A not implemented");
+	uint8_t before = m_Registers.A;
+	uint8_t operand = m_Registers.A;
+	uint8_t after = m_Registers.A + operand;
+	
+	CHK_SET_FLAG_Z(after);
+	RESET_FLAG_N();
+	CHK_SET_FLAG_H(before, operand, after);
+	CHK_SET_FLAG_C(before, operand, after);
+	
+	m_Registers.A = after;
+
 	return Opcode.TickCount;
 }
 
@@ -2660,7 +2838,21 @@ Cpu::ADC_A_B(
  Flags:		Z 0 H C
  --*/
 {
-	throw std::runtime_error("Instruction ADC A,B not implemented");
+	uint8_t operand = m_Registers.B;
+	uint8_t before = m_Registers.A;
+	
+	if( FLAG_IS_SET_C() )
+		operand++;
+	
+	uint8_t after = m_Registers.A + operand;
+	
+	CHK_SET_FLAG_Z(after);
+	RESET_FLAG_N();
+	CHK_SET_FLAG_H(before, operand, after);
+	CHK_SET_FLAG_C(before, operand, after);
+	
+	m_Registers.A = after;
+
 	return Opcode.TickCount;
 }
 
@@ -2678,17 +2870,18 @@ Cpu::ADC_A_C(
  Flags:		Z 0 H C
  --*/
 {
-	uint8_t operand = m_Registers.A;
-	if( FLAG_IS_SET_C() )
-		operand +=1;
-	
+	uint8_t operand = m_Registers.C;
 	uint8_t before = m_Registers.A;
+
+	if( FLAG_IS_SET_C() )
+		operand++;
+	
 	uint8_t after = m_Registers.A + operand;
 	
-	m_Registers.F = 0;
-	CHK_SET_FLAG_C(before, operand, after);
-	CHK_SET_FLAG_H(before, operand, after);
 	CHK_SET_FLAG_Z(after);
+	RESET_FLAG_N();
+	CHK_SET_FLAG_H(before, operand, after);
+	CHK_SET_FLAG_C(before, operand, after);
 	
 	m_Registers.A = after;
 	
@@ -2709,7 +2902,21 @@ Cpu::ADC_A_D(
  Flags:		Z 0 H C
  --*/
 {
-	throw std::runtime_error("Instruction ADC A,D not implemented");
+	uint8_t operand = m_Registers.D;
+	uint8_t before = m_Registers.A;
+	
+	if( FLAG_IS_SET_C() )
+		operand++;
+	
+	uint8_t after = m_Registers.A + operand;
+	
+	CHK_SET_FLAG_Z(after);
+	RESET_FLAG_N();
+	CHK_SET_FLAG_H(before, operand, after);
+	CHK_SET_FLAG_C(before, operand, after);
+	
+	m_Registers.A = after;
+
 	return Opcode.TickCount;
 }
 
@@ -2727,7 +2934,21 @@ Cpu::ADC_A_E(
  Flags:		Z 0 H C
  --*/
 {
-	throw std::runtime_error("Instruction ADC A,E not implemented");
+	uint8_t operand = m_Registers.E;
+	uint8_t before = m_Registers.A;
+	
+	if( FLAG_IS_SET_C() )
+		operand++;
+	
+	uint8_t after = m_Registers.A + operand;
+	
+	CHK_SET_FLAG_Z(after);
+	RESET_FLAG_N();
+	CHK_SET_FLAG_H(before, operand, after);
+	CHK_SET_FLAG_C(before, operand, after);
+	
+	m_Registers.A = after;
+
 	return Opcode.TickCount;
 }
 
@@ -2745,7 +2966,21 @@ Cpu::ADC_A_H(
  Flags:		Z 0 H C
  --*/
 {
-	throw std::runtime_error("Instruction ADC A,H not implemented");
+	uint8_t operand = m_Registers.H;
+	uint8_t before = m_Registers.A;
+	
+	if( FLAG_IS_SET_C() )
+		operand++;
+	
+	uint8_t after = m_Registers.A + operand;
+	
+	CHK_SET_FLAG_Z(after);
+	RESET_FLAG_N();
+	CHK_SET_FLAG_H(before, operand, after);
+	CHK_SET_FLAG_C(before, operand, after);
+	
+	m_Registers.A = after;
+
 	return Opcode.TickCount;
 }
 
@@ -2763,7 +2998,21 @@ Cpu::ADC_A_L(
  Flags:		Z 0 H C
  --*/
 {
-	throw std::runtime_error("Instruction ADC A,L not implemented");
+	uint8_t operand = m_Registers.L;
+	uint8_t before = m_Registers.A;
+	
+	if( FLAG_IS_SET_C() )
+		operand++;
+	
+	uint8_t after = m_Registers.A + operand;
+	
+	CHK_SET_FLAG_Z(after);
+	RESET_FLAG_N();
+	CHK_SET_FLAG_H(before, operand, after);
+	CHK_SET_FLAG_C(before, operand, after);
+	
+	m_Registers.A = after;
+
 	return Opcode.TickCount;
 }
 
@@ -2781,7 +3030,21 @@ Cpu::ADC_A__HL_(
  Flags:		Z 0 H C
  --*/
 {
-	throw std::runtime_error("Instruction ADC A,(HL) not implemented");
+	uint8_t operand = m_Memory[m_Registers.HL].Get();
+	uint8_t before = m_Registers.A;
+	
+	if( FLAG_IS_SET_C() )
+		operand++;
+	
+	uint8_t after = m_Registers.A + operand;
+	
+	CHK_SET_FLAG_Z(after);
+	RESET_FLAG_N();
+	CHK_SET_FLAG_H(before, operand, after);
+	CHK_SET_FLAG_C(before, operand, after);
+	
+	m_Registers.A = after;
+
 	return Opcode.TickCount;
 }
 
@@ -2799,7 +3062,21 @@ Cpu::ADC_A_A(
  Flags:		Z 0 H C
  --*/
 {
-	throw std::runtime_error("Instruction ADC A,A not implemented");
+	uint8_t operand = m_Registers.A;
+	uint8_t before = m_Registers.A;
+	
+	if( FLAG_IS_SET_C() )
+		operand++;
+	
+	uint8_t after = m_Registers.A + operand;
+	
+	CHK_SET_FLAG_Z(after);
+	RESET_FLAG_N();
+	CHK_SET_FLAG_H(before, operand, after);
+	CHK_SET_FLAG_C(before, operand, after);
+	
+	m_Registers.A = after;
+
 	return Opcode.TickCount;
 }
 
@@ -2817,7 +3094,17 @@ Cpu::SUB_B(
  Flags:		Z 1 H C
  --*/
 {
-	throw std::runtime_error("Instruction SUB B not implemented");
+	uint8_t operand = m_Registers.B;
+	uint8_t before = m_Registers.A;
+	uint8_t after = before - operand;
+	
+	CHK_SET_FLAG_Z(after);
+	SET_FLAG_N();
+	CHK_SET_FLAG_H(before, operand, after);
+	CHK_SET_FLAG_C(before, operand, after);
+	
+	m_Registers.A = after;
+
 	return Opcode.TickCount;
 }
 
@@ -2835,7 +3122,17 @@ Cpu::SUB_C(
  Flags:		Z 1 H C
  --*/
 {
-	throw std::runtime_error("Instruction SUB C not implemented");
+	uint8_t operand = m_Registers.C;
+	uint8_t before = m_Registers.A;
+	uint8_t after = before - operand;
+	
+	CHK_SET_FLAG_Z(after);
+	SET_FLAG_N();
+	CHK_SET_FLAG_H(before, operand, after);
+	CHK_SET_FLAG_C(before, operand, after);
+	
+	m_Registers.A = after;
+
 	return Opcode.TickCount;
 }
 
@@ -2853,7 +3150,17 @@ Cpu::SUB_D(
  Flags:		Z 1 H C
  --*/
 {
-	throw std::runtime_error("Instruction SUB D not implemented");
+	uint8_t operand = m_Registers.D;
+	uint8_t before = m_Registers.A;
+	uint8_t after = before - operand;
+	
+	CHK_SET_FLAG_Z(after);
+	SET_FLAG_N();
+	CHK_SET_FLAG_H(before, operand, after);
+	CHK_SET_FLAG_C(before, operand, after);
+	
+	m_Registers.A = after;
+
 	return Opcode.TickCount;
 }
 
@@ -2871,7 +3178,17 @@ Cpu::SUB_E(
  Flags:		Z 1 H C
  --*/
 {
-	throw std::runtime_error("Instruction SUB E not implemented");
+	uint8_t operand = m_Registers.E;
+	uint8_t before = m_Registers.A;
+	uint8_t after = before - operand;
+	
+	CHK_SET_FLAG_Z(after);
+	SET_FLAG_N();
+	CHK_SET_FLAG_H(before, operand, after);
+	CHK_SET_FLAG_C(before, operand, after);
+	
+	m_Registers.A = after;
+
 	return Opcode.TickCount;
 }
 
@@ -2889,7 +3206,17 @@ Cpu::SUB_H(
  Flags:		Z 1 H C
  --*/
 {
-	throw std::runtime_error("Instruction SUB H not implemented");
+	uint8_t operand = m_Registers.H;
+	uint8_t before = m_Registers.A;
+	uint8_t after = before - operand;
+	
+	CHK_SET_FLAG_Z(after);
+	SET_FLAG_N();
+	CHK_SET_FLAG_H(before, operand, after);
+	CHK_SET_FLAG_C(before, operand, after);
+	
+	m_Registers.A = after;
+
 	return Opcode.TickCount;
 }
 
@@ -2907,7 +3234,17 @@ Cpu::SUB_L(
  Flags:		Z 1 H C
  --*/
 {
-	throw std::runtime_error("Instruction SUB L not implemented");
+	uint8_t operand = m_Registers.L;
+	uint8_t before = m_Registers.A;
+	uint8_t after = before - operand;
+	
+	CHK_SET_FLAG_Z(after);
+	SET_FLAG_N();
+	CHK_SET_FLAG_H(before, operand, after);
+	CHK_SET_FLAG_C(before, operand, after);
+	
+	m_Registers.A = after;
+
 	return Opcode.TickCount;
 }
 
@@ -2925,7 +3262,17 @@ Cpu::SUB__HL_(
  Flags:		Z 1 H C
  --*/
 {
-	throw std::runtime_error("Instruction SUB (HL) not implemented");
+	uint8_t operand = m_Memory[m_Registers.HL].Get();
+	uint8_t before = m_Registers.A;
+	uint8_t after = before - operand;
+	
+	CHK_SET_FLAG_Z(after);
+	SET_FLAG_N();
+	CHK_SET_FLAG_H(before, operand, after);
+	CHK_SET_FLAG_C(before, operand, after);
+	
+	m_Registers.A = after;
+
 	return Opcode.TickCount;
 }
 
@@ -2943,7 +3290,17 @@ Cpu::SUB_A(
  Flags:		Z 1 H C
  --*/
 {
-	throw std::runtime_error("Instruction SUB A not implemented");
+	uint8_t operand = m_Registers.A;
+	uint8_t before = m_Registers.A;
+	uint8_t after = before - operand;
+	
+	CHK_SET_FLAG_Z(after);
+	SET_FLAG_N();
+	CHK_SET_FLAG_H(before, operand, after);
+	CHK_SET_FLAG_C(before, operand, after);
+	
+	m_Registers.A = after;
+
 	return Opcode.TickCount;
 }
 
@@ -2961,7 +3318,21 @@ Cpu::SBC_A_B(
  Flags:		Z 1 H C
  --*/
 {
-	throw std::runtime_error("Instruction SBC A,B not implemented");
+	uint8_t operand = m_Registers.B;
+	uint8_t before = m_Registers.A;
+
+	if( FLAG_IS_SET_C() )
+		operand++;
+
+	uint8_t after = before - operand;
+	
+	CHK_SET_FLAG_Z(after);
+	SET_FLAG_N();
+	CHK_SET_FLAG_H(before, operand, after);
+	CHK_SET_FLAG_C(before, operand, after);
+	
+	m_Registers.A = after;
+
 	return Opcode.TickCount;
 }
 
@@ -2979,7 +3350,21 @@ Cpu::SBC_A_C(
  Flags:		Z 1 H C
  --*/
 {
-	throw std::runtime_error("Instruction SBC A,C not implemented");
+	uint8_t operand = m_Registers.C;
+	uint8_t before = m_Registers.A;
+
+	if( FLAG_IS_SET_C() )
+		operand++;
+
+	uint8_t after = before - operand;
+	
+	CHK_SET_FLAG_Z(after);
+	SET_FLAG_N();
+	CHK_SET_FLAG_H(before, operand, after);
+	CHK_SET_FLAG_C(before, operand, after);
+	
+	m_Registers.A = after;
+
 	return Opcode.TickCount;
 }
 
@@ -2997,7 +3382,21 @@ Cpu::SBC_A_D(
  Flags:		Z 1 H C
  --*/
 {
-	throw std::runtime_error("Instruction SBC A,D not implemented");
+	uint8_t operand = m_Registers.D;
+	uint8_t before = m_Registers.A;
+
+	if( FLAG_IS_SET_C() )
+		operand++;
+
+	uint8_t after = before - operand;
+	
+	CHK_SET_FLAG_Z(after);
+	SET_FLAG_N();
+	CHK_SET_FLAG_H(before, operand, after);
+	CHK_SET_FLAG_C(before, operand, after);
+	
+	m_Registers.A = after;
+
 	return Opcode.TickCount;
 }
 
@@ -3015,7 +3414,21 @@ Cpu::SBC_A_E(
  Flags:		Z 1 H C
  --*/
 {
-	throw std::runtime_error("Instruction SBC A,E not implemented");
+	uint8_t operand = m_Registers.E;
+	uint8_t before = m_Registers.A;
+
+	if( FLAG_IS_SET_C() )
+		operand++;
+
+	uint8_t after = before - operand;
+	
+	CHK_SET_FLAG_Z(after);
+	SET_FLAG_N();
+	CHK_SET_FLAG_H(before, operand, after);
+	CHK_SET_FLAG_C(before, operand, after);
+	
+	m_Registers.A = after;
+
 	return Opcode.TickCount;
 }
 
@@ -3033,7 +3446,21 @@ Cpu::SBC_A_H(
  Flags:		Z 1 H C
  --*/
 {
-	throw std::runtime_error("Instruction SBC A,H not implemented");
+	uint8_t operand = m_Registers.H;
+	uint8_t before = m_Registers.A;
+
+	if( FLAG_IS_SET_C() )
+		operand++;
+
+	uint8_t after = before - operand;
+	
+	CHK_SET_FLAG_Z(after);
+	SET_FLAG_N();
+	CHK_SET_FLAG_H(before, operand, after);
+	CHK_SET_FLAG_C(before, operand, after);
+	
+	m_Registers.A = after;
+
 	return Opcode.TickCount;
 }
 
@@ -3051,7 +3478,21 @@ Cpu::SBC_A_L(
  Flags:		Z 1 H C
  --*/
 {
-	throw std::runtime_error("Instruction SBC A,L not implemented");
+	uint8_t operand = m_Registers.L;
+	uint8_t before = m_Registers.A;
+
+	if( FLAG_IS_SET_C() )
+		operand++;
+
+	uint8_t after = before - operand;
+	
+	CHK_SET_FLAG_Z(after);
+	SET_FLAG_N();
+	CHK_SET_FLAG_H(before, operand, after);
+	CHK_SET_FLAG_C(before, operand, after);
+	
+	m_Registers.A = after;
+
 	return Opcode.TickCount;
 }
 
@@ -3069,7 +3510,21 @@ Cpu::SBC_A__HL_(
  Flags:		Z 1 H C
  --*/
 {
-	throw std::runtime_error("Instruction SBC A,(HL) not implemented");
+	uint8_t operand = m_Memory[m_Registers.HL].Get();
+	uint8_t before = m_Registers.A;
+
+	if( FLAG_IS_SET_C() )
+		operand++;
+
+	uint8_t after = before - operand;
+	
+	CHK_SET_FLAG_Z(after);
+	SET_FLAG_N();
+	CHK_SET_FLAG_H(before, operand, after);
+	CHK_SET_FLAG_C(before, operand, after);
+	
+	m_Registers.A = after;
+
 	return Opcode.TickCount;
 }
 
@@ -3087,7 +3542,21 @@ Cpu::SBC_A_A(
  Flags:		Z 1 H C
  --*/
 {
-	throw std::runtime_error("Instruction SBC A,A not implemented");
+	uint8_t operand = m_Registers.A;
+	uint8_t before = m_Registers.A;
+
+	if( FLAG_IS_SET_C() )
+		operand++;
+
+	uint8_t after = before - operand;
+	
+	CHK_SET_FLAG_Z(after);
+	SET_FLAG_N();
+	CHK_SET_FLAG_H(before, operand, after);
+	CHK_SET_FLAG_C(before, operand, after);
+	
+	m_Registers.A = after;
+
 	return Opcode.TickCount;
 }
 
@@ -3105,7 +3574,13 @@ Cpu::AND_B(
  Flags:		Z 0 1 0
  --*/
 {
-	throw std::runtime_error("Instruction AND B not implemented");
+	m_Registers.A &= m_Registers.B;
+
+	CHK_SET_FLAG_Z(m_Registers.A);
+	RESET_FLAG_N();
+	SET_FLAG_H();
+	RESET_FLAG_C();
+
 	return Opcode.TickCount;
 }
 
@@ -3123,7 +3598,13 @@ Cpu::AND_C(
  Flags:		Z 0 1 0
  --*/
 {
-	throw std::runtime_error("Instruction AND C not implemented");
+	m_Registers.A &= m_Registers.C;
+
+	CHK_SET_FLAG_Z(m_Registers.A);
+	RESET_FLAG_N();
+	SET_FLAG_H();
+	RESET_FLAG_C();
+
 	return Opcode.TickCount;
 }
 
@@ -3141,7 +3622,13 @@ Cpu::AND_D(
  Flags:		Z 0 1 0
  --*/
 {
-	throw std::runtime_error("Instruction AND D not implemented");
+	m_Registers.A &= m_Registers.D;
+
+	CHK_SET_FLAG_Z(m_Registers.A);
+	RESET_FLAG_N();
+	SET_FLAG_H();
+	RESET_FLAG_C();
+
 	return Opcode.TickCount;
 }
 
@@ -3159,7 +3646,13 @@ Cpu::AND_E(
  Flags:		Z 0 1 0
  --*/
 {
-	throw std::runtime_error("Instruction AND E not implemented");
+	m_Registers.A &= m_Registers.E;
+
+	CHK_SET_FLAG_Z(m_Registers.A);
+	RESET_FLAG_N();
+	SET_FLAG_H();
+	RESET_FLAG_C();
+
 	return Opcode.TickCount;
 }
 
@@ -3177,7 +3670,13 @@ Cpu::AND_H(
  Flags:		Z 0 1 0
  --*/
 {
-	throw std::runtime_error("Instruction AND H not implemented");
+	m_Registers.A &= m_Registers.H;
+
+	CHK_SET_FLAG_Z(m_Registers.A);
+	RESET_FLAG_N();
+	SET_FLAG_H();
+	RESET_FLAG_C();
+
 	return Opcode.TickCount;
 }
 
@@ -3195,7 +3694,13 @@ Cpu::AND_L(
  Flags:		Z 0 1 0
  --*/
 {
-	throw std::runtime_error("Instruction AND L not implemented");
+	m_Registers.A &= m_Registers.L;
+
+	CHK_SET_FLAG_Z(m_Registers.A);
+	RESET_FLAG_N();
+	SET_FLAG_H();
+	RESET_FLAG_C();
+
 	return Opcode.TickCount;
 }
 
@@ -3213,7 +3718,13 @@ Cpu::AND__HL_(
  Flags:		Z 0 1 0
  --*/
 {
-	throw std::runtime_error("Instruction AND (HL) not implemented");
+	m_Registers.A &= m_Memory[m_Registers.HL].Get();
+
+	CHK_SET_FLAG_Z(m_Registers.A);
+	RESET_FLAG_N();
+	SET_FLAG_H();
+	RESET_FLAG_C();
+
 	return Opcode.TickCount;
 }
 
@@ -3231,7 +3742,13 @@ Cpu::AND_A(
  Flags:		Z 0 1 0
  --*/
 {
-	throw std::runtime_error("Instruction AND A not implemented");
+	m_Registers.A &= m_Registers.A;
+
+	CHK_SET_FLAG_Z(m_Registers.A);
+	RESET_FLAG_N();
+	SET_FLAG_H();
+	RESET_FLAG_C();
+
 	return Opcode.TickCount;
 }
 
@@ -3249,7 +3766,13 @@ Cpu::XOR_B(
  Flags:		Z 0 0 0
  --*/
 {
-	throw std::runtime_error("Instruction XOR B not implemented");
+	m_Registers.A ^= m_Registers.B;
+
+	CHK_SET_FLAG_Z(m_Registers.A);
+	RESET_FLAG_N();
+	RESET_FLAG_H();
+	RESET_FLAG_C();
+
 	return Opcode.TickCount;
 }
 
@@ -3267,7 +3790,13 @@ Cpu::XOR_C(
  Flags:		Z 0 0 0
  --*/
 {
-	throw std::runtime_error("Instruction XOR C not implemented");
+	m_Registers.A ^= m_Registers.C;
+
+	CHK_SET_FLAG_Z(m_Registers.A);
+	RESET_FLAG_N();
+	RESET_FLAG_H();
+	RESET_FLAG_C();
+
 	return Opcode.TickCount;
 }
 
@@ -3285,7 +3814,13 @@ Cpu::XOR_D(
  Flags:		Z 0 0 0
  --*/
 {
-	throw std::runtime_error("Instruction XOR D not implemented");
+	m_Registers.A ^= m_Registers.D;
+
+	CHK_SET_FLAG_Z(m_Registers.A);
+	RESET_FLAG_N();
+	RESET_FLAG_H();
+	RESET_FLAG_C();
+
 	return Opcode.TickCount;
 }
 
@@ -3303,7 +3838,13 @@ Cpu::XOR_E(
  Flags:		Z 0 0 0
  --*/
 {
-	throw std::runtime_error("Instruction XOR E not implemented");
+	m_Registers.A ^= m_Registers.E;
+
+	CHK_SET_FLAG_Z(m_Registers.A);
+	RESET_FLAG_N();
+	RESET_FLAG_H();
+	RESET_FLAG_C();
+
 	return Opcode.TickCount;
 }
 
@@ -3321,7 +3862,13 @@ Cpu::XOR_H(
  Flags:		Z 0 0 0
  --*/
 {
-	throw std::runtime_error("Instruction XOR H not implemented");
+	m_Registers.A ^= m_Registers.H;
+
+	CHK_SET_FLAG_Z(m_Registers.A);
+	RESET_FLAG_N();
+	RESET_FLAG_H();
+	RESET_FLAG_C();
+
 	return Opcode.TickCount;
 }
 
@@ -3339,7 +3886,13 @@ Cpu::XOR_L(
  Flags:		Z 0 0 0
  --*/
 {
-	throw std::runtime_error("Instruction XOR L not implemented");
+	m_Registers.A ^= m_Registers.L;
+
+	CHK_SET_FLAG_Z(m_Registers.A);
+	RESET_FLAG_N();
+	RESET_FLAG_H();
+	RESET_FLAG_C();
+
 	return Opcode.TickCount;
 }
 
@@ -3357,7 +3910,13 @@ Cpu::XOR__HL_(
  Flags:		Z 0 0 0
  --*/
 {
-	throw std::runtime_error("Instruction XOR (HL) not implemented");
+	m_Registers.A ^= m_Memory[m_Registers.HL].Get();
+
+	CHK_SET_FLAG_Z(m_Registers.A);
+	RESET_FLAG_N();
+	RESET_FLAG_H();
+	RESET_FLAG_C();
+
 	return Opcode.TickCount;
 }
 
@@ -3376,9 +3935,11 @@ Cpu::XOR_A(
  --*/
 {
 	m_Registers.A ^= m_Registers.A;
-	m_Registers.F = 0;
-	
+
 	CHK_SET_FLAG_Z(m_Registers.A);
+	RESET_FLAG_N();
+	RESET_FLAG_H();
+	RESET_FLAG_C();
 	
 	return Opcode.TickCount;
 }
@@ -3397,7 +3958,13 @@ Cpu::OR_B(
  Flags:		Z 0 0 0
  --*/
 {
-	throw std::runtime_error("Instruction OR B not implemented");
+	m_Registers.A |= m_Registers.B;
+
+	CHK_SET_FLAG_Z(m_Registers.A);
+	RESET_FLAG_N();
+	RESET_FLAG_H();
+	RESET_FLAG_C();
+
 	return Opcode.TickCount;
 }
 
@@ -3415,7 +3982,13 @@ Cpu::OR_C(
  Flags:		Z 0 0 0
  --*/
 {
-	throw std::runtime_error("Instruction OR C not implemented");
+	m_Registers.A |= m_Registers.C;
+
+	CHK_SET_FLAG_Z(m_Registers.A);
+	RESET_FLAG_N();
+	RESET_FLAG_H();
+	RESET_FLAG_C();
+
 	return Opcode.TickCount;
 }
 
@@ -3433,7 +4006,13 @@ Cpu::OR_D(
  Flags:		Z 0 0 0
  --*/
 {
-	throw std::runtime_error("Instruction OR D not implemented");
+	m_Registers.A |= m_Registers.D;
+
+	CHK_SET_FLAG_Z(m_Registers.A);
+	RESET_FLAG_N();
+	RESET_FLAG_H();
+	RESET_FLAG_C();
+
 	return Opcode.TickCount;
 }
 
@@ -3451,7 +4030,13 @@ Cpu::OR_E(
  Flags:		Z 0 0 0
  --*/
 {
-	throw std::runtime_error("Instruction OR E not implemented");
+	m_Registers.A |= m_Registers.E;
+
+	CHK_SET_FLAG_Z(m_Registers.A);
+	RESET_FLAG_N();
+	RESET_FLAG_H();
+	RESET_FLAG_C();
+
 	return Opcode.TickCount;
 }
 
@@ -3469,7 +4054,13 @@ Cpu::OR_H(
  Flags:		Z 0 0 0
  --*/
 {
-	throw std::runtime_error("Instruction OR H not implemented");
+	m_Registers.A |= m_Registers.H;
+
+	CHK_SET_FLAG_Z(m_Registers.A);
+	RESET_FLAG_N();
+	RESET_FLAG_H();
+	RESET_FLAG_C();
+
 	return Opcode.TickCount;
 }
 
@@ -3487,7 +4078,13 @@ Cpu::OR_L(
  Flags:		Z 0 0 0
  --*/
 {
-	throw std::runtime_error("Instruction OR L not implemented");
+	m_Registers.A |= m_Registers.L;
+
+	CHK_SET_FLAG_Z(m_Registers.A);
+	RESET_FLAG_N();
+	RESET_FLAG_H();
+	RESET_FLAG_C();
+
 	return Opcode.TickCount;
 }
 
@@ -3505,7 +4102,13 @@ Cpu::OR__HL_(
  Flags:		Z 0 0 0
  --*/
 {
-	throw std::runtime_error("Instruction OR (HL) not implemented");
+	m_Registers.A |= m_Memory[m_Registers.HL].Get();
+
+	CHK_SET_FLAG_Z(m_Registers.A);
+	RESET_FLAG_N();
+	RESET_FLAG_H();
+	RESET_FLAG_C();
+
 	return Opcode.TickCount;
 }
 
@@ -3523,7 +4126,13 @@ Cpu::OR_A(
  Flags:		Z 0 0 0
  --*/
 {
-	throw std::runtime_error("Instruction OR A not implemented");
+	m_Registers.A |= m_Registers.A;
+
+	CHK_SET_FLAG_Z(m_Registers.A);
+	RESET_FLAG_N();
+	RESET_FLAG_H();
+	RESET_FLAG_C();
+
 	return Opcode.TickCount;
 }
 
@@ -3767,7 +4376,8 @@ Cpu::POP_BC(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction POP BC not implemented");
+	m_Registers.BC = Pop();
+
 	return Opcode.TickCount;
 }
 
