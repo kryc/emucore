@@ -146,7 +146,7 @@ typedef enum{
 #define CHK_SET_FLAG_H(before,opnd,after) ((((before ^ opnd ^ after) & 0x10) == 0x10) ? (SET_FLAG_H()) : (RESET_FLAG_H()))
 #define CHK_SET_FLAG_Z(after) ((after==0)? (SET_FLAG_Z()) : (RESET_FLAG_Z()))
 
-#define CHK_SET_FLAG_C_16(before,opnd,after) (((( after & 0x10000) > 0) ? (SET_FLAG_C()) : (RESET_FLAG_C()))
+#define CHK_SET_FLAG_C_16(before,opnd,after) ((( after & 0x10000) > 0) ? (SET_FLAG_C()) : (RESET_FLAG_C()))
 #define CHK_SET_FLAG_H_16(before,opnd,after) ((((before ^ opnd ^ after) & 0x1000) == 0x1000) ? (SET_FLAG_H()) : (RESET_FLAG_H()))
 
 class Cpu : public ProcessingCore
@@ -164,6 +164,8 @@ private:
 	/* Utility functions for opcode emulation */
 	void 		Push(uint16_t Value);
 	void 		Push(uint8_t Value);
+	uint16_t	Pop(void);
+	uint8_t		Pop8(void);
 	uint8_t 	Immediate8(void);
 	uint16_t 	Immediate16(void);
 

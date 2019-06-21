@@ -50,6 +50,26 @@ Cpu::Push(
 	m_Registers.SP -= 1;
 }
 
+uint16_t
+Cpu::Pop(void)
+{
+	uint16_t value;
+	value = m_Memory[m_Registers.SP].Get();
+	value <<= 8;
+	value |= m_Memory[m_Registers.SP+1].Get();
+	m_Registers.SP += 2;
+	return value;
+}
+
+uint8_t
+Cpu::Pop8(void)
+{
+	uint8_t value;
+	value = m_Memory[m_Registers.SP].Get();
+	m_Registers.SP += 1;
+	return value;
+}
+
 uint8_t
 Cpu::Immediate8(void)
 {
