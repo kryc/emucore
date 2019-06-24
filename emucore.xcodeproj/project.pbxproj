@@ -14,6 +14,8 @@
 		EE58ACD222B8045200A6114A /* Cpu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EE58ACCA22B8045100A6114A /* Cpu.cpp */; };
 		EE58ACD322B8045200A6114A /* Memory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EE58ACCC22B8045100A6114A /* Memory.cpp */; };
 		EE58ACD622B80C2C00A6114A /* CpuOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EE58ACD522B80C2C00A6114A /* CpuOperations.cpp */; };
+		EE9CF40922C1308D00E27DFE /* Gpu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EE9CF40722C1308D00E27DFE /* Gpu.cpp */; };
+		EE9CF40C22C130DB00E27DFE /* MemoryAccessor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EE9CF40A22C130DB00E27DFE /* MemoryAccessor.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -45,6 +47,10 @@
 		EE58ACCF22B8045200A6114A /* CallbackTable.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CallbackTable.txt; sourceTree = "<group>"; };
 		EE58ACD022B8045200A6114A /* ClassOperations.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ClassOperations.txt; sourceTree = "<group>"; };
 		EE58ACD522B80C2C00A6114A /* CpuOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CpuOperations.cpp; sourceTree = "<group>"; };
+		EE9CF40722C1308D00E27DFE /* Gpu.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Gpu.cpp; sourceTree = "<group>"; };
+		EE9CF40822C1308D00E27DFE /* Gpu.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Gpu.hpp; sourceTree = "<group>"; };
+		EE9CF40A22C130DB00E27DFE /* MemoryAccessor.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = MemoryAccessor.cpp; sourceTree = "<group>"; };
+		EE9CF40B22C130DB00E27DFE /* MemoryAccessor.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = MemoryAccessor.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,6 +87,7 @@
 				EE1DE01222B02DAE00E227FB /* include */,
 				EE1DE00F22B02D9800E227FB /* Clock.cpp */,
 				EE1DE01322B2C28100E227FB /* InterruptableCore.cpp */,
+				EE9CF40A22C130DB00E27DFE /* MemoryAccessor.cpp */,
 				EE1DE01622B2C43F00E227FB /* ProcessingCore.cpp */,
 			);
 			path = emucore;
@@ -98,6 +105,8 @@
 				EE58ACCE22B8045200A6114A /* instruction_builder.py */,
 				EE58ACCC22B8045100A6114A /* Memory.cpp */,
 				EE58ACCD22B8045100A6114A /* Memory.hpp */,
+				EE9CF40722C1308D00E27DFE /* Gpu.cpp */,
+				EE9CF40822C1308D00E27DFE /* Gpu.hpp */,
 			);
 			path = gameboy;
 			sourceTree = "<group>";
@@ -107,6 +116,7 @@
 			children = (
 				EE1DE01022B02D9800E227FB /* Clock.hpp */,
 				EE1DE01422B2C28100E227FB /* InterruptableCore.hpp */,
+				EE9CF40B22C130DB00E27DFE /* MemoryAccessor.hpp */,
 				EE1DE01722B2C43F00E227FB /* ProcessingCore.hpp */,
 			);
 			path = include;
@@ -172,6 +182,8 @@
 				EE1DE01122B02D9800E227FB /* Clock.cpp in Sources */,
 				EE58ACD222B8045200A6114A /* Cpu.cpp in Sources */,
 				EE1DE01822B2C43F00E227FB /* ProcessingCore.cpp in Sources */,
+				EE9CF40922C1308D00E27DFE /* Gpu.cpp in Sources */,
+				EE9CF40C22C130DB00E27DFE /* MemoryAccessor.cpp in Sources */,
 				EE1DE00722B02CF800E227FB /* main.cpp in Sources */,
 				EE58ACD622B80C2C00A6114A /* CpuOperations.cpp in Sources */,
 				EE1DE01522B2C28100E227FB /* InterruptableCore.cpp in Sources */,
