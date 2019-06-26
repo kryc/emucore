@@ -55,10 +55,8 @@ Cpu::Push(
 uint16_t
 Cpu::Pop(void)
 {
-	uint16_t value;
-	value = m_Memory[m_Registers.SP].Get();
-	value <<= 8;
-	value |= m_Memory[m_Registers.SP+1].Get();
+	uint16_t value = m_Memory[m_Registers.SP].Get();
+	value |= (m_Memory[m_Registers.SP+1].Get() << 8);
 	m_Registers.SP += 2;
 	return value;
 }
@@ -85,9 +83,15 @@ Cpu::Immediate16(void)
 }
 
 void
-Cpu::OnVblank(int Interrupt)
+Cpu::OnInterrupt(int Interrupt)
+/*++
+ The deal here is that for most interrupts, the Id is the address of the
+ handler. Therefore we can just push the current PC and read the handler
+ straight from memory
+ --*/
 {
-
+	Push(m_Registers.PC);
+	m_Registers.PC = Interrupt;
 }
 
 void
@@ -97,7 +101,7 @@ Cpu::Run(void)
 	m_Gpu = std::make_shared<Gpu>(shared_from_this(), m_Memory);
 
 	/* Register interrupt handlers */
-	RegisterInterrupt(INTERRUPT_VBLANK, std::bind(&Cpu::OnVblank, this, std::placeholders::_1));
+	RegisterInterrupt(INTERRUPT_VBLANK, std::bind(&Cpu::OnInterrupt, this, std::placeholders::_1));
 
 	/* Start executing instructions! */
 #ifdef NOCLOCK

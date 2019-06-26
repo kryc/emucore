@@ -55,6 +55,7 @@ public:
 	std::string 	GetRomName(void);
 	uint8_t 		GetRomType(void);
 	uint16_t		Get16(const size_t Address);
+	uint16_t		Get16NoHook(const size_t Address);
 	MemoryAccessor  operator[] (const size_t Address);
 	uint8_t 		OnIoPortRead(const size_t Address);
 	void	 		OnIoPortWrite(const size_t Address, const uint8_t Value);

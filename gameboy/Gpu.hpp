@@ -21,6 +21,9 @@ public:
 		: m_Cpu(Cpu), m_Memory(Memory){};
 	void Tick(void);
 private:
+	void DecodeTile(const uint16_t TileOffset, uint8_t *ColorValues);
+	void MakeBmp(void);
+	
 	std::shared_ptr<Cpu>	m_Cpu;
 	Memory&					m_Memory;
 	size_t					m_TicksInCurrentCycle = 0;

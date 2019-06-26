@@ -9,8 +9,9 @@
 #ifndef Common_hpp
 #define Common_hpp
 
-enum{
-	INTERRUPT_VBLANK
+enum : int
+{
+	INTERRUPT_VBLANK = 0x40
 };
 
 #endif /* Common_hpp */

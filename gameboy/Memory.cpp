@@ -109,6 +109,18 @@ Memory::Get16(
 	return ret;
 }
 
+uint16_t
+Memory::Get16NoHook(
+	const size_t Address
+	)
+{
+	uint16_t ret;
+	ret = operator[](Address+1).GetNoHook();
+	ret <<= 8;
+	ret |= operator[](Address).GetNoHook();
+	return ret;
+}
+
 uint8_t
 Memory::OnIoPortRead(
 	const size_t Address

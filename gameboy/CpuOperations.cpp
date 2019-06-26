@@ -902,7 +902,14 @@ Cpu::JR_Z_r8(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction JR Z,r8 not implemented");
+	if( FLAG_IS_SET_Z() )
+	{
+		int8_t immediate = (int8_t)Immediate8();
+		m_Registers.PC += immediate + Opcode.InstructionWidth;
+		TickCount = Opcode.BranchTickCount;
+		return Opcode.BranchTickCount;
+	}
+	
 	return Opcode.TickCount;
 }
 
@@ -947,7 +954,9 @@ Cpu::LD_A__HLpls_(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD A,(HL+) not implemented");
+	m_Registers.A = m_Memory[m_Registers.HL].Get();
+	m_Registers.HL++;
+	
 	return Opcode.TickCount;
 }
 
@@ -1188,7 +1197,8 @@ Cpu::LD__HL__d8(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD (HL),d8 not implemented");
+	m_Memory[m_Registers.HL] = Immediate8();
+	
 	return Opcode.TickCount;
 }
 
@@ -1224,7 +1234,13 @@ Cpu::JR_C_r8(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction JR C,r8 not implemented");
+	if( FLAG_IS_SET_C() )
+	{
+		int8_t immediate = (int8_t)Immediate8();
+		m_Registers.PC += immediate + Opcode.InstructionWidth;
+		TickCount = Opcode.BranchTickCount;
+		return Opcode.BranchTickCount;
+	}
 	return Opcode.TickCount;
 }
 
@@ -4358,7 +4374,12 @@ Cpu::RET_NZ(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction RET NZ not implemented");
+	if( FLAG_NOT_SET_Z() )
+	{
+		m_Registers.PC = Pop();
+		TickCount = Opcode.BranchTickCount;
+		return Opcode.BranchTickCount;
+	}
 	return Opcode.TickCount;
 }
 
@@ -4395,7 +4416,12 @@ Cpu::JP_NZ_a16(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction JP NZ,a16 not implemented");
+	if( FLAG_NOT_SET_Z() )
+	{
+		m_Registers.PC = Immediate16();
+		TickCount = Opcode.BranchTickCount;
+		return Opcode.BranchTickCount;
+	}
 	return Opcode.TickCount;
 }
 
@@ -4450,7 +4476,8 @@ Cpu::PUSH_BC(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction PUSH BC not implemented");
+	Push(m_Registers.BC);
+	
 	return Opcode.TickCount;
 }
 
@@ -4508,7 +4535,12 @@ Cpu::RET_Z(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction RET Z not implemented");
+	if( FLAG_IS_SET_Z() )
+	{
+		m_Registers.PC = Pop();
+		TickCount = Opcode.BranchTickCount;
+		return Opcode.BranchTickCount;
+	}
 	return Opcode.TickCount;
 }
 
@@ -4526,7 +4558,8 @@ Cpu::RET(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction RET not implemented");
+	m_Registers.PC = Pop();
+	
 	return Opcode.TickCount;
 }
 
@@ -4598,7 +4631,9 @@ Cpu::CALL_a16(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction CALL a16 not implemented");
+	Push((uint16_t)(m_Registers.PC + Opcode.InstructionWidth));
+	m_Registers.PC = Immediate16();
+	
 	return Opcode.TickCount;
 }
 
@@ -4674,7 +4709,8 @@ Cpu::POP_DE(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction POP DE not implemented");
+	m_Registers.DE = Pop();
+	
 	return Opcode.TickCount;
 }
 
@@ -4728,7 +4764,8 @@ Cpu::PUSH_DE(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction PUSH DE not implemented");
+	Push(m_Registers.DE);
+	
 	return Opcode.TickCount;
 }
 
@@ -4937,7 +4974,8 @@ Cpu::LD__C__A(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD (C),A not implemented");
+	m_Memory[m_Registers.C] = m_Registers.A;
+	
 	return Opcode.TickCount;
 }
 
@@ -4955,7 +4993,8 @@ Cpu::PUSH_HL(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction PUSH HL not implemented");
+	Push(m_Registers.HL);
+	
 	return Opcode.TickCount;
 }
 
@@ -4973,7 +5012,13 @@ Cpu::AND_d8(
  Flags:		Z 0 1 0
  --*/
 {
-	throw std::runtime_error("Instruction AND d8 not implemented");
+	m_Registers.A &= Immediate8();
+	
+	CHK_SET_FLAG_Z(m_Registers.A);
+	RESET_FLAG_N();
+	SET_FLAG_H();
+	RESET_FLAG_C();
+	
 	return Opcode.TickCount;
 }
 
@@ -5049,7 +5094,8 @@ Cpu::LD__a16__A(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD (a16),A not implemented");
+	m_Memory[Immediate16()] = m_Registers.A;
+	
 	return Opcode.TickCount;
 }
 
@@ -5067,7 +5113,13 @@ Cpu::XOR_d8(
  Flags:		Z 0 0 0
  --*/
 {
-	throw std::runtime_error("Instruction XOR d8 not implemented");
+	m_Registers.A ^= Immediate8();
+	
+	CHK_SET_FLAG_Z(m_Registers.A);
+	RESET_FLAG_N();
+	RESET_FLAG_H();
+	RESET_FLAG_C();
+	
 	return Opcode.TickCount;
 }
 
@@ -5185,7 +5237,8 @@ Cpu::PUSH_AF(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction PUSH AF not implemented");
+	Push(m_Registers.AF);
+	
 	return Opcode.TickCount;
 }
 
@@ -5279,7 +5332,8 @@ Cpu::LD_A__a16_(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction LD A,(a16) not implemented");
+	m_Registers.A = m_Memory[Immediate16()].Get();
+	
 	return Opcode.TickCount;
 }
 

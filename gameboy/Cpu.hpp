@@ -173,7 +173,7 @@ private:
 	uint8_t 	Immediate8(void);
 	uint16_t 	Immediate16(void);
 
-	void 		OnVblank(int Interrupt);
+	void 		OnInterrupt(int Interrupt);
 
 	/* Private functions */
 	std::string 	FormatDebugString(std::string DebugString);
