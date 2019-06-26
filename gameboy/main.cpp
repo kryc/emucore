@@ -7,6 +7,7 @@
 //
 
 #include <iostream>
+#include <memory>
 #include <chrono>
 #include <thread>
 
@@ -15,17 +16,17 @@
 int main(int argc, const char * argv[]) {
 	// insert code here...
 	
-	Cpu cpu;
+	std::shared_ptr<Cpu> cpu = std::make_shared<Cpu>();
 #ifdef DEBUG
-	cpu.SetFreq(32.0);
+	cpu->SetFreq(32.0);
 #else
-	cpu.SetFreqMhz(4.194304);
+	cpu->SetFreqMhz(4.194304);
 #endif
-	cpu.LoadRom(argv[1]);
-	cpu.Run();
+	cpu->LoadRom(argv[1]);
+	cpu->Run();
 	
 	
-	Memory& m = cpu.GetMemory();
+	Memory& m = cpu->GetMemory();
 	
 	std::cerr << (int)m.Get16(0xff47) << std::endl;
 	

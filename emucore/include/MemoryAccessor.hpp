@@ -24,6 +24,9 @@ public:
 	MemoryAccessor& operator=(const uint8_t Value);
 	MemoryAccessor operator++(int);
 	uint8_t Get(void);
+	uint8_t GetNoHook(void);
+	void	Set(const uint8_t Value);
+	void 	SetNoHook(const uint8_t Value);
 protected:
 	uint8_t * const 		m_Value;
 	const size_t			m_Address;

@@ -6,18 +6,21 @@
 //  Copyright © 2019 Gareth Evans. All rights reserved.
 //
 
+#include <memory>
 #include <map>
 #include <functional>
 #include <sstream>
 #include <assert.h>
+#include "Common.hpp"
 #include "Cpu.hpp"
+#include "Gpu.hpp"
 
 static const std::map<int, struct Opcode> g_Instructions
 {
 #include "CallbackTable.txt"
 };
 
-Cpu::Cpu()
+Cpu::Cpu(void)
 {
 	/* Initialize registers */
 	m_Registers.AF = 0x01;
@@ -28,7 +31,6 @@ Cpu::Cpu()
 	m_Registers.SP = 0xfffe;
 	
 	m_Registers.PC = 0x100;
-	
 }
 
 void
@@ -83,8 +85,21 @@ Cpu::Immediate16(void)
 }
 
 void
+Cpu::OnVblank(int Interrupt)
+{
+
+}
+
+void
 Cpu::Run(void)
 {
+	/* Initialise the GPU */
+	m_Gpu = std::make_shared<Gpu>(shared_from_this(), m_Memory);
+
+	/* Register interrupt handlers */
+	RegisterInterrupt(INTERRUPT_VBLANK, std::bind(&Cpu::OnVblank, this, std::placeholders::_1));
+
+	/* Start executing instructions! */
 #ifdef NOCLOCK
 	for( ;; )
 	{
@@ -199,6 +214,8 @@ Cpu::Tick(void)
 		/* Tick on the instruction pointer. ONLY if it didnt change in the instruction */
 		m_Registers.PC += opcode.InstructionWidth;
 	}
+
+	m_Gpu->Tick();
 }
 
 

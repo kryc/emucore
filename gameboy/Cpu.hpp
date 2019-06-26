@@ -12,6 +12,7 @@
 #include <cstdint>
 #include "ProcessingCore.hpp"
 #include "Memory.hpp"
+#include "Gpu.hpp"
 
 typedef struct __attribute__((__packed__)){
 	union{
@@ -92,6 +93,7 @@ typedef struct __attribute__((__packed__)){
 } REGISTERS;
 
 class Cpu;
+class Gpu;
 
 using OpcodeCallback = std::function<ssize_t(Cpu*, const struct Opcode&, ssize_t, ssize_t&)>;
 
@@ -149,7 +151,9 @@ typedef enum{
 #define CHK_SET_FLAG_C_16(before,opnd,after) ((( after & 0x10000) > 0) ? (SET_FLAG_C()) : (RESET_FLAG_C()))
 #define CHK_SET_FLAG_H_16(before,opnd,after) ((((before ^ opnd ^ after) & 0x1000) == 0x1000) ? (SET_FLAG_H()) : (RESET_FLAG_H()))
 
-class Cpu : public ProcessingCore
+class Cpu : 
+	public ProcessingCore,
+	public std::enable_shared_from_this<Cpu>
 {
 public:
 	Cpu();
@@ -169,13 +173,16 @@ private:
 	uint8_t 	Immediate8(void);
 	uint16_t 	Immediate16(void);
 
+	void 		OnVblank(int Interrupt);
+
 	/* Private functions */
 	std::string 	FormatDebugString(std::string DebugString);
 
 	/* Private variables */
-	REGISTERS 		m_Registers{};
-	Memory 			m_Memory;
-	InterruptState 	m_InterruptState = Enabled;
+	REGISTERS 				m_Registers{};
+	Memory 					m_Memory;
+	std::shared_ptr<Gpu>	m_Gpu;
+	InterruptState 			m_InterruptState = Enabled;
 };
 
 #endif /* Cpu_hpp */

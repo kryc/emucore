@@ -9,10 +9,18 @@
 #include <cstdint>
 #include "MemoryAccessor.hpp"
 
-MemoryAccessor&
-MemoryAccessor::operator=(
-						  const uint8_t Value
-						  )
+void
+MemoryAccessor::SetNoHook(
+	const uint8_t Value
+	)
+{
+	*m_Value = Value;
+}
+
+void
+MemoryAccessor::Set(
+	const uint8_t Value
+	)
 {
 	/* If we have a callback registered, use it */
 	if( m_WriteCallback )
@@ -21,9 +29,23 @@ MemoryAccessor::operator=(
 	}
 	else
 	{
-		*m_Value = Value;
+		SetNoHook(Value);
 	}
+}
+
+MemoryAccessor&
+MemoryAccessor::operator=(
+	const uint8_t Value
+	)
+{
+	Set(Value);
 	return *this;
+}
+
+uint8_t
+MemoryAccessor::GetNoHook(void)
+{
+	return *m_Value;
 }
 
 uint8_t
@@ -35,5 +57,5 @@ MemoryAccessor::Get(void)
 		return m_ReadCallback(m_Address);
 	}
 	
-	return *m_Value;
+	return GetNoHook();
 }

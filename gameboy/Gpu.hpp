@@ -9,18 +9,22 @@
 #ifndef Gpu_hpp
 #define Gpu_hpp
 
-#include "Cpu.hpp"
+class Cpu;
+
+#include <memory>
 #include "Memory.hpp"
 
 class Gpu
 {
 public:
-	Gpu(Cpu* Cpu, Memory* Memory)
+	Gpu(std::shared_ptr<Cpu> Cpu, Memory& Memory)
 		: m_Cpu(Cpu), m_Memory(Memory){};
 	void Tick(void);
 private:
-	Cpu*	m_Cpu;
-	Memory*	m_Memory;
+	std::shared_ptr<Cpu>	m_Cpu;
+	Memory&					m_Memory;
+	size_t					m_TicksInCurrentCycle = 0;
+	size_t					m_TotalTicks = 0;
 };
 
 #endif /* Gpu_hpp */
