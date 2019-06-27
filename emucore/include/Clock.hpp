@@ -14,7 +14,7 @@
 class Clock
 {
 public:
-	virtual void Tick(void);
+	virtual bool Tick(void) = 0;
 	void Run(void);
 	void SetFreq(double Hz);
 	void SetFreqMhz(double MHz);

@@ -10,7 +10,10 @@
 #define Cpu_hpp
 
 #include <cstdint>
+#include <string>
+#include <map>
 #include "ProcessingCore.hpp"
+#include "DebuggableCore.hpp"
 #include "Memory.hpp"
 #include "Gpu.hpp"
 
@@ -153,14 +156,16 @@ typedef enum{
 
 class Cpu : 
 	public ProcessingCore,
+	public DebuggableCore,
 	public std::enable_shared_from_this<Cpu>
 {
 public:
 	Cpu();
 	void 		Run(void);
-	void 		Tick(void) override;
+	bool 		Tick(void) override;
 	void 		LoadRom(std::string RomFile) { m_Memory.LoadRom(RomFile); };
 	Memory&		GetMemory(void) { return m_Memory; };
+	std::map<std::string, register_t> GetRegisters(void) override;
 	
 	/* The following are the opcode callback routines */
 #include "ClassOperations.txt"

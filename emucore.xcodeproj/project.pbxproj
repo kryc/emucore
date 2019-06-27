@@ -16,10 +16,30 @@
 		EE58ACD622B80C2C00A6114A /* CpuOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EE58ACD522B80C2C00A6114A /* CpuOperations.cpp */; };
 		EE9CF40922C1308D00E27DFE /* Gpu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EE9CF40722C1308D00E27DFE /* Gpu.cpp */; };
 		EE9CF40C22C130DB00E27DFE /* MemoryAccessor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EE9CF40A22C130DB00E27DFE /* MemoryAccessor.cpp */; };
+		EEF9BAF422C5316E00783116 /* DebuggableCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EEF9BAF222C5316E00783116 /* DebuggableCore.cpp */; };
+		EEF9BB0122C5377400783116 /* debugger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EEF9BB0022C5377400783116 /* debugger.cpp */; };
+		EEF9BB0222C5378000783116 /* Clock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EE1DE00F22B02D9800E227FB /* Clock.cpp */; };
+		EEF9BB0322C5378000783116 /* DebuggableCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EEF9BAF222C5316E00783116 /* DebuggableCore.cpp */; };
+		EEF9BB0422C5378000783116 /* InterruptableCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EE1DE01322B2C28100E227FB /* InterruptableCore.cpp */; };
+		EEF9BB0522C5378000783116 /* MemoryAccessor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EE9CF40A22C130DB00E27DFE /* MemoryAccessor.cpp */; };
+		EEF9BB0622C5378000783116 /* ProcessingCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EE1DE01622B2C43F00E227FB /* ProcessingCore.cpp */; };
+		EEF9BB0722C537A000783116 /* Cpu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EE58ACCA22B8045100A6114A /* Cpu.cpp */; };
+		EEF9BB0822C537A000783116 /* CpuOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EE58ACD522B80C2C00A6114A /* CpuOperations.cpp */; };
+		EEF9BB0922C537A000783116 /* Memory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EE58ACCC22B8045100A6114A /* Memory.cpp */; };
+		EEF9BB0A22C537A000783116 /* Gpu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EE9CF40722C1308D00E27DFE /* Gpu.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		EE1DE00122B02CF800E227FB /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		EEF9BAF722C5375A00783116 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = /usr/share/man/man1/;
@@ -52,10 +72,21 @@
 		EE9CF40A22C130DB00E27DFE /* MemoryAccessor.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = MemoryAccessor.cpp; sourceTree = "<group>"; };
 		EE9CF40B22C130DB00E27DFE /* MemoryAccessor.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = MemoryAccessor.hpp; sourceTree = "<group>"; };
 		EEF9BAF122C3FA8800783116 /* Common.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Common.hpp; sourceTree = "<group>"; };
+		EEF9BAF222C5316E00783116 /* DebuggableCore.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = DebuggableCore.cpp; sourceTree = "<group>"; };
+		EEF9BAF322C5316E00783116 /* DebuggableCore.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = DebuggableCore.hpp; sourceTree = "<group>"; };
+		EEF9BAF922C5375A00783116 /* gameboydebuggger */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = gameboydebuggger; sourceTree = BUILT_PRODUCTS_DIR; };
+		EEF9BB0022C5377400783116 /* debugger.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = debugger.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		EE1DE00022B02CF800E227FB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EEF9BAF622C5375A00783116 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -78,6 +109,7 @@
 			isa = PBXGroup;
 			children = (
 				EE1DE00322B02CF800E227FB /* emucore */,
+				EEF9BAF922C5375A00783116 /* gameboydebuggger */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -87,6 +119,7 @@
 			children = (
 				EE1DE01222B02DAE00E227FB /* include */,
 				EE1DE00F22B02D9800E227FB /* Clock.cpp */,
+				EEF9BAF222C5316E00783116 /* DebuggableCore.cpp */,
 				EE1DE01322B2C28100E227FB /* InterruptableCore.cpp */,
 				EE9CF40A22C130DB00E27DFE /* MemoryAccessor.cpp */,
 				EE1DE01622B2C43F00E227FB /* ProcessingCore.cpp */,
@@ -98,6 +131,7 @@
 			isa = PBXGroup;
 			children = (
 				EE1DE00622B02CF800E227FB /* main.cpp */,
+				EEF9BB0022C5377400783116 /* debugger.cpp */,
 				EE58ACCF22B8045200A6114A /* CallbackTable.txt */,
 				EE58ACD022B8045200A6114A /* ClassOperations.txt */,
 				EEF9BAF122C3FA8800783116 /* Common.hpp */,
@@ -117,6 +151,7 @@
 			isa = PBXGroup;
 			children = (
 				EE1DE01022B02D9800E227FB /* Clock.hpp */,
+				EEF9BAF322C5316E00783116 /* DebuggableCore.hpp */,
 				EE1DE01422B2C28100E227FB /* InterruptableCore.hpp */,
 				EE9CF40B22C130DB00E27DFE /* MemoryAccessor.hpp */,
 				EE1DE01722B2C43F00E227FB /* ProcessingCore.hpp */,
@@ -144,6 +179,23 @@
 			productReference = EE1DE00322B02CF800E227FB /* emucore */;
 			productType = "com.apple.product-type.tool";
 		};
+		EEF9BAF822C5375A00783116 /* gameboydebuggger */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EEF9BAFD22C5375A00783116 /* Build configuration list for PBXNativeTarget "gameboydebuggger" */;
+			buildPhases = (
+				EEF9BAF522C5375A00783116 /* Sources */,
+				EEF9BAF622C5375A00783116 /* Frameworks */,
+				EEF9BAF722C5375A00783116 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = gameboydebuggger;
+			productName = gameboydebuggger;
+			productReference = EEF9BAF922C5375A00783116 /* gameboydebuggger */;
+			productType = "com.apple.product-type.tool";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -154,6 +206,9 @@
 				ORGANIZATIONNAME = "Gareth Evans";
 				TargetAttributes = {
 					EE1DE00222B02CF800E227FB = {
+						CreatedOnToolsVersion = 10.2.1;
+					};
+					EEF9BAF822C5375A00783116 = {
 						CreatedOnToolsVersion = 10.2.1;
 					};
 				};
@@ -171,6 +226,7 @@
 			projectRoot = "";
 			targets = (
 				EE1DE00222B02CF800E227FB /* emucore */,
+				EEF9BAF822C5375A00783116 /* gameboydebuggger */,
 			);
 		};
 /* End PBXProject section */
@@ -180,6 +236,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EEF9BAF422C5316E00783116 /* DebuggableCore.cpp in Sources */,
 				EE58ACD322B8045200A6114A /* Memory.cpp in Sources */,
 				EE1DE01122B02D9800E227FB /* Clock.cpp in Sources */,
 				EE58ACD222B8045200A6114A /* Cpu.cpp in Sources */,
@@ -189,6 +246,23 @@
 				EE1DE00722B02CF800E227FB /* main.cpp in Sources */,
 				EE58ACD622B80C2C00A6114A /* CpuOperations.cpp in Sources */,
 				EE1DE01522B2C28100E227FB /* InterruptableCore.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EEF9BAF522C5375A00783116 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EEF9BB0722C537A000783116 /* Cpu.cpp in Sources */,
+				EEF9BB0122C5377400783116 /* debugger.cpp in Sources */,
+				EEF9BB0222C5378000783116 /* Clock.cpp in Sources */,
+				EEF9BB0822C537A000783116 /* CpuOperations.cpp in Sources */,
+				EEF9BB0922C537A000783116 /* Memory.cpp in Sources */,
+				EEF9BB0422C5378000783116 /* InterruptableCore.cpp in Sources */,
+				EEF9BB0322C5378000783116 /* DebuggableCore.cpp in Sources */,
+				EEF9BB0622C5378000783116 /* ProcessingCore.cpp in Sources */,
+				EEF9BB0A22C537A000783116 /* Gpu.cpp in Sources */,
+				EEF9BB0522C5378000783116 /* MemoryAccessor.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -322,6 +396,22 @@
 			};
 			name = Release;
 		};
+		EEF9BAFE22C5375A00783116 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		EEF9BAFF22C5375A00783116 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -339,6 +429,15 @@
 			buildConfigurations = (
 				EE1DE00B22B02CF800E227FB /* Debug */,
 				EE1DE00C22B02CF800E227FB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EEF9BAFD22C5375A00783116 /* Build configuration list for PBXNativeTarget "gameboydebuggger" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EEF9BAFE22C5375A00783116 /* Debug */,
+				EEF9BAFF22C5375A00783116 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -215,7 +215,7 @@ Gpu::MakeBmp(void)
 	bmpinfoheader[10] = (uint8_t)(ScreenBufferHeightPixels >>16);
 	bmpinfoheader[11] = (uint8_t)(ScreenBufferHeightPixels >>24);
 	
-	FILE *f = fopen("/home/gareth/ScreenBuffer.bmp","wb");
+	FILE *f = fopen("/Users/gazz/Desktop/ScreenBuffer.bmp","wb");
 	fwrite(bmpfileheader,1,14,f);
 	fwrite(bmpinfoheader,1,40,f);
 	for( size_t i=0; i<ScreenBufferHeightPixels; i++ )

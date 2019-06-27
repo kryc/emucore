@@ -33,6 +33,22 @@ Cpu::Cpu(void)
 	m_Registers.PC = 0x100;
 }
 
+std::map<std::string, register_t>
+Cpu::GetRegisters(void)
+{
+	std::map<std::string, register_t> ret;
+	ret["A"] = m_Registers.A;
+	ret["F"] = m_Registers.F;
+	ret["B"] = m_Registers.B;
+	ret["C"] = m_Registers.C;
+	ret["D"] = m_Registers.D;
+	ret["E"] = m_Registers.E;
+	ret["HL"] = m_Registers.HL;
+	ret["SP"] = m_Registers.SP;
+	ret["PC"] = m_Registers.PC;
+	return ret;
+}
+
 void
 Cpu::Push(
 	uint16_t Value
@@ -119,7 +135,11 @@ Cpu::Run(void)
 #ifdef NOCLOCK
 	for( ;; )
 	{
-		Tick();
+		if( !Tick() )
+		{
+			/* Hit a breakpoint */
+			break;
+		}
 	}
 #else
 	Clock::Run();
@@ -157,7 +177,7 @@ Cpu::FormatDebugString(
 	return DebugString;
 }
 
-void
+bool
 Cpu::Tick(void)
 /*++
  This gets called automatically by the underlying Clock.
@@ -176,8 +196,15 @@ Cpu::Tick(void)
 	if( ticksUsed == ticksInCurrentOp )
 	{
 		/* We have completed the previous operation (or it is the first op).
-		Read the new op and reset the counters */
-
+		 	we do a number of things now.
+		 	1) Check to see if we need to break for a debugger
+		 	2) Fetch a new operation to execute and reset the counters
+		 */
+		if( ShouldBreak(m_Registers.PC) )
+		{
+			return false;
+		}
+		
 		// if( m_Registers.PC > 0x8000 )
 		// {
 		// 	auto badOpcode = g_Instructions.at(m_Memory[m_Registers.PC].Get());
@@ -243,6 +270,7 @@ Cpu::Tick(void)
 	}
 
 	m_Gpu->Tick();
+	return true;
 }
 
 

@@ -44,16 +44,6 @@ Clock::SetFreqMhz(double MHz)
 	SetFreq(MHz * 1000);
 }
 
- void
- Clock::Tick(void)
- {
-#ifdef DEBUG
- 	unsigned int randomSleep = std::rand() % (int)std::round(m_TickTimeUs/2);
- 	if( usleep(randomSleep) == -1 )
- 		std::cerr << "Err: " << errno << std::endl;
-#endif
- }
-
 void
 Clock::Run(void)
 {
@@ -61,7 +51,11 @@ Clock::Run(void)
 	
 	for(;;){
 		auto start = std::chrono::steady_clock::now();
-		this->Tick();
+		if( !Tick() )
+		{
+			/* If tick returns false then the callee is requesting to stop */
+			break;
+		}
 		auto end = std::chrono::steady_clock::now();
 		std::chrono::duration<double> diff = end-start;
 		
