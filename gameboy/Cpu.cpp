@@ -71,15 +71,27 @@ Cpu::Pop8(void)
 }
 
 uint8_t
+Cpu::Immediate8(uint16_t Pc)
+{
+	return m_Memory[Pc+1].Get();
+}
+
+uint8_t
 Cpu::Immediate8(void)
 {
-	return m_Memory[m_Registers.PC+1].Get();
+	return Immediate8(m_Registers.PC);
+}
+
+uint16_t
+Cpu::Immediate16(uint16_t Pc)
+{
+	return m_Memory.Get16(Pc+1);
 }
 
 uint16_t
 Cpu::Immediate16(void)
 {
-	return m_Memory.Get16(m_Registers.PC+1);
+	return Immediate16(m_Registers.PC);
 }
 
 void
@@ -116,7 +128,8 @@ Cpu::Run(void)
 
 std::string
 Cpu::FormatDebugString(
-   std::string DebugString
+   std::string DebugString,
+   const uint32_t Pc
    )
 {
 	std::size_t found = DebugString.find("a16");
@@ -126,7 +139,8 @@ Cpu::FormatDebugString(
 		found = DebugString.find("r16");
 	if ( found != std::string::npos ){
 		std::stringstream stream;
-		stream << "0x" << std::hex << (int)Immediate16();
+		int immediate16 = (Pc == 0x10000 ? Immediate16() : Immediate16((uint16_t)Pc));
+		stream << "0x" << std::hex << immediate16;
 		DebugString.replace(found, 3, stream.str());
 	}
 	found = DebugString.find("a8");
@@ -136,7 +150,8 @@ Cpu::FormatDebugString(
 		found = DebugString.find("r8");
 	if ( found != std::string::npos ){
 		std::stringstream stream;
-		stream << "0x" << std::hex << (int)Immediate8();
+		int immediate8 = (Pc == 0x10000 ? Immediate8() : Immediate8((uint16_t)Pc));
+		stream << "0x" << std::hex << immediate8;
 		DebugString.replace(found, 2, stream.str());
 	}
 	return DebugString;
@@ -162,7 +177,15 @@ Cpu::Tick(void)
 	{
 		/* We have completed the previous operation (or it is the first op).
 		Read the new op and reset the counters */
-		assert(m_Registers.PC >= 0 && m_Registers.PC < 0x8000);
+
+		// if( m_Registers.PC > 0x8000 )
+		// {
+		// 	auto badOpcode = g_Instructions.at(m_Memory[m_Registers.PC].Get());
+		// 	std::cerr << "Bad PC detected!" << std::endl;
+		// 	std::cerr << std::hex << "\t[" << m_Registers.PC << "] " << std::dec << FormatDebugString(opcode.DebugString) << std::endl;
+		// 	std::cerr << "Exiting" << std::endl;
+		// }
+		
 		startingPC = m_Registers.PC;
 		uint8_t nextOpcode = m_Memory[m_Registers.PC].Get();
 		opcode = g_Instructions.at(nextOpcode);
@@ -198,7 +221,7 @@ Cpu::Tick(void)
 		
 #ifdef DEBUG
 		/* Patch up the debug string */
-		std::cout << FormatDebugString(opcode.DebugString) << std::endl;
+		std::cout << std::hex << "[" << m_Registers.PC << "] " << std::dec << FormatDebugString(opcode.DebugString) << std::endl;
 #endif
 	}
 	

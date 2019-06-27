@@ -170,13 +170,15 @@ private:
 	void 		Push(uint8_t Value);
 	uint16_t	Pop(void);
 	uint8_t		Pop8(void);
+	uint8_t 	Immediate8(uint16_t Pc);
 	uint8_t 	Immediate8(void);
+	uint16_t 	Immediate16(uint16_t Pc);
 	uint16_t 	Immediate16(void);
 
 	void 		OnInterrupt(int Interrupt);
 
 	/* Private functions */
-	std::string 	FormatDebugString(std::string DebugString);
+	std::string 	FormatDebugString(std::string DebugString, const uint32_t Pc = 0x10000);
 
 	/* Private variables */
 	REGISTERS 				m_Registers{};
