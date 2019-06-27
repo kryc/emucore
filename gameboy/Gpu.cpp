@@ -6,12 +6,14 @@
 //  Copyright © 2019 Gareth Evans. All rights reserved.
 //
 
+#include <assert.h>
 #include "Gpu.hpp"
 #include "Common.hpp"
 #include "Cpu.hpp"
 
 static const size_t TileWidth = 8;
 static const size_t TileHeight = 8;
+static const size_t PixelsPerTile = TileWidth*TileHeight;
 static const size_t PixelsPerTileElement = (sizeof(uint16_t) * 8) / 2;
 static const size_t ElementsPerTile = (TileWidth*TileHeight)/PixelsPerTileElement;
 
@@ -167,7 +169,9 @@ Gpu::MakeBmp(void)
 	uint8_t lcd_on = (m_Memory[0xFF40].GetNoHook() & (1 << 7)) >> 7;
 #endif
 	
-	std::array<uint8_t, ScreenBufferWidthPixels*ScreenBufferHeightPixels*3> rgb;
+	std::array<uint8_t, ScreenBufferWidthPixels*ScreenBufferHeightPixels> 	screenBuffer;
+	std::array<uint8_t, ScreenBufferWidthPixels*ScreenBufferHeightPixels*3> screenBufferRgb;
+
 	size_t nextPixel = 0;
 	
 	for( size_t tileRow = 0; tileRow < ScreenBufferHeightTiles; tileRow++ )
@@ -176,18 +180,18 @@ Gpu::MakeBmp(void)
 		{
 			uint16_t tilenum = (uint16_t)m_Memory[tm_loc + (tileCol*32+tileRow)].Get();
 			uint16_t tileData = td_loc + (tilenum*16);
-			std::array<uint8_t, PixelsPerTileElement> pixmap;
 			
-			DecodeTile(tileData, &pixmap[0]);
-			
-			for(size_t i=0; i<pixmap.size(); i++)
-			{
-				uint8_t pixval = 64 * pixmap[i];
-				rgb[nextPixel++] = pixval;
-				rgb[nextPixel++] = pixval;
-				rgb[nextPixel++] = pixval;
-			}
+			DecodeTile(tileData, &screenBuffer[nextPixel]);
+			nextPixel += PixelsPerTile;
 		}
+	}
+
+	for(size_t i=0; i<screenBuffer.size(); i++)
+	{
+		uint8_t pixval = 64 * screenBuffer[i];
+		screenBufferRgb[(i*3)] = pixval;
+		screenBufferRgb[(i*3)+1] = pixval;
+		screenBufferRgb[(i*3)+2] = pixval;
 	}
 	
 	
@@ -211,12 +215,12 @@ Gpu::MakeBmp(void)
 	bmpinfoheader[10] = (uint8_t)(ScreenBufferHeightPixels >>16);
 	bmpinfoheader[11] = (uint8_t)(ScreenBufferHeightPixels >>24);
 	
-	FILE *f = fopen("/Users/gazz/Desktop/ScreenBuffer.bmp","wb");
+	FILE *f = fopen("/home/gareth/ScreenBuffer.bmp","wb");
 	fwrite(bmpfileheader,1,14,f);
 	fwrite(bmpinfoheader,1,40,f);
 	for( size_t i=0; i<ScreenBufferHeightPixels; i++ )
 	{
-		fwrite(&rgb[0]+(ScreenBufferWidthPixels*(ScreenBufferHeightPixels-i-1)*3),3,ScreenBufferWidthPixels,f);
+		fwrite(&screenBufferRgb[0]+(ScreenBufferWidthPixels*(ScreenBufferHeightPixels-i-1)*3),3,ScreenBufferWidthPixels,f);
 		fwrite(bmppad,1,(4-(ScreenBufferWidthPixels*3)%4)%4,f);
 	}
 	
