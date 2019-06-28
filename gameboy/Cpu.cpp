@@ -31,6 +31,9 @@ Cpu::Cpu(void)
 	m_Registers.SP = 0xfffe;
 	
 	m_Registers.PC = 0x100;
+
+	/* Register interrupt handlers */
+	RegisterInterrupt(INTERRUPT_VBLANK, std::bind(&Cpu::OnInterrupt, this, std::placeholders::_1));
 }
 
 std::map<std::string, register_t>
@@ -148,10 +151,10 @@ void
 Cpu::Run(void)
 {
 	/* Initialise the GPU */
-	m_Gpu = std::make_shared<Gpu>(shared_from_this(), m_Memory);
-
-	/* Register interrupt handlers */
-	RegisterInterrupt(INTERRUPT_VBLANK, std::bind(&Cpu::OnInterrupt, this, std::placeholders::_1));
+	if( m_Gpu == nullptr )
+	{
+		m_Gpu = std::make_shared<Gpu>(shared_from_this(), m_Memory);
+	}
 
 	/* Start executing instructions! */
 #ifdef NOCLOCK
@@ -166,6 +169,22 @@ Cpu::Run(void)
 #else
 	Clock::Run();
 #endif
+}
+
+void
+Cpu::Step(void)
+{
+	/* Initialise the GPU */
+	if( m_Gpu == nullptr )
+	{
+		m_Gpu = std::make_shared<Gpu>(shared_from_this(), m_Memory);
+	}
+	
+	size_t startingOperations = m_OperationsExecuted;
+	while( m_OperationsExecuted == startingOperations )
+	{
+		Tick();
+	}
 }
 
 std::string
@@ -350,6 +369,8 @@ Cpu::Tick(void)
 		{
 			m_Registers.PC += opcode.InstructionWidth;
 		}
+
+		m_OperationsExecuted++;
 	}
 
 	/* Tick the GPU */

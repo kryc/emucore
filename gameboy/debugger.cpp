@@ -65,12 +65,36 @@ RunCommand(
 		cpu->Run();
 		std::cerr << "Trapped to debugger" << std::endl;
 	}
+	else if( command == "s" || command == "step" )
+	{
+		lastCommand = command;
+		// char fmtAddress[10] = {0};
+		// register_t address = cpu->GetRegisters()["pc"];
+		// sprintf(fmtAddress, "%04x", (unsigned int)(cpu->ReadMemory(address)));
+		// std::cerr << fmtAddress << cpu->FormatDebugString(address, nullptr) << std::endl;
+		cpu->Step();
+	}
 	else if( command == "b" || command == "bp" || command == "break" || command == "breakpoint" )
 	{
 		lastCommand = command;
 		register_t address = commandLine.size() > 1 ? ReadAddress(commandLine[1]) : 0;
 		std::cerr << "Adding breakpoint at 0x" << std::hex << address << std::dec << std::endl;
 		cpu->AddBreakPoint(address);
+	}
+	else if( command == "bi" )
+	{
+		lastCommand = command;
+		for( ;; )
+		{
+			register_t address = cpu->GetRegisters()["pc"];
+			std::string opstring = cpu->FormatDebugString(address);
+			std::cerr << opstring << std::endl;
+			if( opstring.substr(0, commandLine[1].length()) == commandLine[1] )
+			{
+				break;
+			}
+			cpu->Step();
+		}
 	}
 	else if( command == "reg" || command == "info reg" )
 	{
@@ -119,7 +143,7 @@ RunCommand(
 			if( lastDis == (register_t)-1 )
 				address = cpu->GetRegisters()["pc"];
 			else
-				address = lastDis + (16*4);
+				address = lastDis;
 		}else{
 			address = ReadAddress(commandLine[1]);
 		}
@@ -128,8 +152,6 @@ RunCommand(
 		{
 			readLen = ReadAddress(commandLine[2]);
 		}
-
-		lastDis = address;
 
 		for( size_t i=0; i<readLen; i++ )
 		{
@@ -146,6 +168,7 @@ RunCommand(
 			address += instructionWidth;
 		}
 
+		lastDis = address;
 	}
 }
 
@@ -157,7 +180,7 @@ int main(int argc, const char * argv[]) {
 		std::cerr << "Usage: " << argv[0] << " <romfile> [<command>]" << std::endl;
 		return 0;
 	}
-	
+
 	std::shared_ptr<Cpu> cpu = std::make_shared<Cpu>();
 	cpu->SetFreqMhz(4.194304);
 	cpu->LoadRom(argv[1]);

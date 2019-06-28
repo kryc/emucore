@@ -751,7 +751,7 @@ Cpu::LD_HL_d16(
  Flags:		- - - -
  --*/
 {
-	m_Registers.HL = m_Memory.Get16(m_Registers.PC+1);
+	m_Registers.HL = Immediate16();
 	
 	/* No flags affected */
 	
@@ -4439,8 +4439,8 @@ Cpu::JP_a16(
  Flags:		- - - -
  --*/
 {
-	uint16_t address = m_Memory.Get16(m_Registers.PC+1);
-	m_Registers.PC = address;
+	m_Registers.PC = Immediate16();
+
 	return Opcode.TickCount;
 }
 
@@ -4626,7 +4626,6 @@ Cpu::CALL_Z_a16(
 		TickCount = Opcode.BranchTickCount;
 		return Opcode.BranchTickCount;
 	}
-	return Opcode.TickCount;
 	return Opcode.TickCount;
 }
 
@@ -4908,7 +4907,6 @@ Cpu::CALL_C_a16(
 		TickCount = Opcode.BranchTickCount;
 		return Opcode.BranchTickCount;
 	}
-	return Opcode.TickCount;
 	return Opcode.TickCount;
 }
 

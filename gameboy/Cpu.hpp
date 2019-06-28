@@ -168,11 +168,12 @@ class Cpu :
 public:
 	Cpu();
 	void 		Run(void);
+	void		Step(void) override;
 	bool 		Tick(void) override;
 	void 		LoadRom(std::string RomFile) { m_Memory.LoadRom(RomFile); };
 	Memory&		GetMemory(void) { return m_Memory; };
 	std::map<std::string, register_t> GetRegisters(void) override;
-	std::string FormatDebugString(const uint32_t Pc = 0x10000, size_t *Width = nullptr);
+	std::string FormatDebugString(const uint32_t Pc = 0x10000, size_t *InstructionWidth = nullptr);
 	uint8_t ReadMemory(register_t Address) override;
 	std::vector<uint8_t> ReadMemoryRange(register_t StartAddress, size_t Length) override;
 	
@@ -198,6 +199,7 @@ private:
 	Memory 					m_Memory;
 	std::shared_ptr<Gpu>	m_Gpu;
 	InterruptState 			m_InterruptState = Disabled;
+	size_t 					m_OperationsExecuted = 0;
 };
 
 #endif /* Cpu_hpp */
