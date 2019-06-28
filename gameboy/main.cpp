@@ -16,6 +16,12 @@
 int main(int argc, const char * argv[]) {
 	// insert code here...
 	
+	if( argc < 2 )
+	{
+		std::cerr << "Usage: " << argv[0] << " <romfile>" << std::endl;
+		return 0;
+	}
+
 	std::shared_ptr<Cpu> cpu = std::make_shared<Cpu>();
 	cpu->SetFreqMhz(4.194304);
 	cpu->LoadRom(argv[1]);

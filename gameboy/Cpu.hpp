@@ -166,6 +166,9 @@ public:
 	void 		LoadRom(std::string RomFile) { m_Memory.LoadRom(RomFile); };
 	Memory&		GetMemory(void) { return m_Memory; };
 	std::map<std::string, register_t> GetRegisters(void) override;
+	std::string FormatDebugString(const uint32_t Pc = 0x10000, size_t *Width = nullptr);
+	uint8_t ReadMemory(register_t Address) override;
+	std::vector<uint8_t> ReadMemoryRange(register_t StartAddress, size_t Length) override;
 	
 	/* The following are the opcode callback routines */
 #include "ClassOperations.txt"
@@ -183,7 +186,6 @@ private:
 	void 		OnInterrupt(int Interrupt);
 
 	/* Private functions */
-	std::string 	FormatDebugString(std::string DebugString, const uint32_t Pc = 0x10000);
 
 	/* Private variables */
 	REGISTERS 				m_Registers{};

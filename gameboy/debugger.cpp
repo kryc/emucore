@@ -7,87 +7,177 @@
 //
 
 #include <iostream>
+#include <sstream>
+#include <iterator>
 #include <memory>
 #include <chrono>
 #include <thread>
 
 #include "Cpu.hpp"
 
+std::vector<std::string>
+SplitCommand(std::string Line)
+{
+	std::istringstream iss(Line);
+	std::vector<std::string> results((std::istream_iterator<std::string>(iss)),
+										std::istream_iterator<std::string>());
+	return results;
+}
+
+register_t
+ReadAddress(std::string Address)
+{
+	std::string hexBytes = Address.substr(0,2) == "0x" ? Address.substr(2) : Address;
+	register_t address = (register_t) strtoull(hexBytes.c_str(), 0, 16);
+	return address;
+}
+
+std::string lastCommand;
+register_t lastMem = (register_t)-1;
+register_t lastDis = (register_t)-1;
+
+void
+RunCommand(
+	std::shared_ptr<Cpu> cpu,
+	std::vector<std::string> commandLine
+	)
+{
+	std::string command;
+	if( commandLine.size() == 0 && lastCommand != "" )
+	{
+		/* Empty line re-runs last command */
+		command = lastCommand;
+	}
+	else if( commandLine.size() == 0 && lastCommand == "" )
+	{
+		std::cerr << "Please enter a command or \"help\" for help" << std::endl;
+		return;
+	}
+	else
+	{
+		command = commandLine[0];
+	}
+
+	if( command == "r" || command == "run" )
+	{
+		lastCommand = command;
+		std::cerr << "Running emulator" << std::endl;
+		cpu->Run();
+		std::cerr << "Trapped to debugger" << std::endl;
+	}
+	else if( command == "b" || command == "bp" || command == "break" || command == "breakpoint" )
+	{
+		lastCommand = command;
+		register_t address = commandLine.size() > 1 ? ReadAddress(commandLine[1]) : 0;
+		std::cerr << "Adding breakpoint at 0x" << std::hex << address << std::dec << std::endl;
+		cpu->AddBreakPoint(address);
+	}
+	else if( command == "reg" || command == "info reg" )
+	{
+		lastCommand = command;
+		std::cerr << "Register state:" << std::endl;
+		for ( const auto &reg : cpu->GetRegisters() ) {
+			std::cout << "\t" << reg.first << ": " << std::hex << reg.second << std::dec << std::endl;
+		}
+	}
+	else if( command == "mem" || command == "x" )
+	{
+		lastCommand = command;
+		register_t address;
+		if( commandLine.size() < 2 ){
+			// No address
+			if( lastMem == (register_t)-1 )
+				address = 0;
+			else
+				address = lastMem + (16*4);
+		}else{
+			address = ReadAddress(commandLine[1]);
+		}
+		
+		lastMem = address;
+		
+		for( size_t i=0; i<4; i++ )
+		{
+			char fmtAddress[10] = {0};
+			sprintf(fmtAddress, "%04x", (unsigned int)(cpu->ReadMemory(address + (i*16))));
+			std::cerr << fmtAddress << "\t";
+			for(size_t j=0; j<16; j++ )
+			{
+				fprintf(stderr, "%02x ", (int)cpu->ReadMemory(address + (i*16) + j));
+			}
+			std::cerr << std::dec << std::endl;
+		}
+	}		
+	else if( command == "d" || command.substr(0,3) == "dis" || command == "u" )
+	{
+		lastCommand = command;
+		register_t address;
+		size_t readLen = 16;
+
+		if( commandLine.size() < 2 ){
+			// No address
+			if( lastDis == (register_t)-1 )
+				address = cpu->GetRegisters()["pc"];
+			else
+				address = lastDis + (16*4);
+		}else{
+			address = ReadAddress(commandLine[1]);
+		}
+
+		if( commandLine.size() > 2 )
+		{
+			readLen = ReadAddress(commandLine[2]);
+		}
+
+		lastDis = address;
+
+		for( size_t i=0; i<readLen; i++ )
+		{
+			size_t instructionWidth;
+			char fmtAddress[10] = {0};
+			sprintf(fmtAddress, "%04x\t", (unsigned int)(address));
+			try{
+				std::cerr << fmtAddress << cpu->FormatDebugString(address, &instructionWidth) << std::endl;
+			}
+			catch( ... )
+			{
+				std::cerr << fmtAddress << std::endl;
+			}
+			address += instructionWidth;
+		}
+
+	}
+}
+
 int main(int argc, const char * argv[]) {
 	// insert code here...
+	
+	if( argc < 2 )
+	{
+		std::cerr << "Usage: " << argv[0] << " <romfile> [<command>]" << std::endl;
+		return 0;
+	}
 	
 	std::shared_ptr<Cpu> cpu = std::make_shared<Cpu>();
 	cpu->SetFreqMhz(4.194304);
 	cpu->LoadRom(argv[1]);
 	
-	std::string lastCommand;
-	register_t lastMem = (register_t)-1;
-	
-	for (std::string line; std::getline(std::cin, line);) {
-		if( line == "" )
+	if( argc > 2 ){
+		std::vector<std::string> commandLine;
+		for( int i=2; i<argc; i++ )
 		{
-			/* Empty line re-runs last command */
-			line = lastCommand;
+			commandLine.push_back(argv[i]);
 		}
-		std::string command = line.substr(0, line.find(" "));
-
-		if( command == "r" || command == "run" )
-		{
-			lastCommand = command;
-			std::cerr << "Running emulator" << std::endl;
-			cpu->Run();
-			std::cerr << "Trapped to debugger" << std::endl;
-		}
-		else if( command == "b" || command == "bp" || command == "break" || command == "breakpoint" )
-		{
-			lastCommand = command;
-			std::string address = line.substr(line.find(" ")+1);
-			register_t iAddress = (register_t) strtoull(address.c_str(), 0, 16);
-			std::cerr << "Adding breakpoint at 0x" << std::hex << iAddress << std::dec << std::endl;
-			cpu->AddBreakPoint(iAddress);
-		}
-		else if( command == "reg" || command == "info reg" )
-		{
-			lastCommand = command;
-			std::cerr << "Register state:" << std::endl;
-			for ( const auto &reg : cpu->GetRegisters() ) {
-				std::cout << "\t" << reg.first << ": " << std::hex << reg.second << std::dec << std::endl;
-			}
-		}
-		else if( command == "mem" || command == "x" )
-		{
-			lastCommand = command;
-			register_t iAddress;
-			if( line.find(' ') == std::string::npos ){
-				// No address
-				if( lastMem == (register_t)-1 )
-					iAddress = 0;
-				else
-					iAddress = lastMem + (16*4);
-			}else{
-				std::string address = line.substr(line.find(" ")+1);
-				iAddress = (register_t) strtoull(address.c_str(), 0, 16);
-			}
-			
-			lastMem = iAddress;
-			
-			Memory& memory = cpu->GetMemory();
-			for( size_t i=0; i<4; i++ )
-			{
-				char fmtAddress[10] = {0};
-				sprintf(fmtAddress, "%04x", (unsigned int)(iAddress + (i*16)));
-				std::cerr << fmtAddress << "\t";
-				for(size_t j=0; j<16; j++ )
-				{
-					fprintf(stderr, "%02x ", (int)memory[iAddress + (i*16) + j].Get());
-				}
-				std::cerr << std::dec << std::endl;
-			}
-		}
+		RunCommand(cpu, commandLine);
+		return 0;
 	}
-	
-	
-//	cpu->Run();
+
+	for (std::string line; std::getline(std::cin, line);) {
+
+		auto commandLine = SplitCommand(line);
+
+		RunCommand(cpu, commandLine);
+	}
 	
 	return 0;
 }

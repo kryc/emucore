@@ -49,6 +49,27 @@ Cpu::GetRegisters(void)
 	return ret;
 }
 
+uint8_t
+Cpu::ReadMemory(
+	register_t Address
+	)
+{
+	return m_Memory[Address].Get();
+}
+
+std::vector<uint8_t>
+Cpu::ReadMemoryRange(
+	register_t StartAddress, size_t Length
+	)
+{
+	std::vector<uint8_t> ret;
+	for( size_t i=StartAddress; i<StartAddress+Length; i++ )
+	{
+		ret.push_back(ReadMemory(i));
+	}
+	return ret;
+}
+
 void
 Cpu::Push(
 	uint16_t Value
@@ -148,10 +169,14 @@ Cpu::Run(void)
 
 std::string
 Cpu::FormatDebugString(
-   std::string DebugString,
-   const uint32_t Pc
+   const uint32_t Pc,
+   size_t *InstructionWidth
    )
 {
+	uint32_t address = (Pc == 0x10000 ? m_Registers.PC : (uint16_t)Pc);
+	auto opcode = g_Instructions.at(m_Memory[address].Get());
+	std::string DebugString = opcode.DebugString;
+
 	std::size_t found = DebugString.find("a16");
 	if( found == std::string::npos )
 		found = DebugString.find("d16");
@@ -159,7 +184,7 @@ Cpu::FormatDebugString(
 		found = DebugString.find("r16");
 	if ( found != std::string::npos ){
 		std::stringstream stream;
-		int immediate16 = (Pc == 0x10000 ? Immediate16() : Immediate16((uint16_t)Pc));
+		int immediate16 = Immediate16((uint16_t)address);
 		stream << "0x" << std::hex << immediate16;
 		DebugString.replace(found, 3, stream.str());
 	}
@@ -170,10 +195,16 @@ Cpu::FormatDebugString(
 		found = DebugString.find("r8");
 	if ( found != std::string::npos ){
 		std::stringstream stream;
-		int immediate8 = (Pc == 0x10000 ? Immediate8() : Immediate8((uint16_t)Pc));
+		int immediate8 = Immediate8((uint16_t)address);
 		stream << "0x" << std::hex << immediate8;
 		DebugString.replace(found, 2, stream.str());
 	}
+
+	if( InstructionWidth != nullptr )
+	{
+		*InstructionWidth = opcode.InstructionWidth;
+	}
+
 	return DebugString;
 }
 
@@ -248,7 +279,7 @@ Cpu::Tick(void)
 		
 #ifdef DEBUG
 		/* Patch up the debug string */
-		std::cout << std::hex << "[" << m_Registers.PC << "] " << std::dec << FormatDebugString(opcode.DebugString) << std::endl;
+		std::cout << std::hex << "[" << m_Registers.PC << "] " << std::dec << FormatDebugString() << std::endl;
 #endif
 	}
 	

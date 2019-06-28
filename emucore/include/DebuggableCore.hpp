@@ -20,6 +20,8 @@ public:
 	void	Break(void) { m_Break = true; };
 	void 	AddBreakPoint(const register_t Address) { m_Breakpoints.push_back(Address); };
 	virtual std::map<std::string, register_t> GetRegisters(void) = 0;
+	virtual uint8_t ReadMemory(register_t Address) = 0;
+	virtual std::vector<uint8_t> ReadMemoryRange(register_t StartAddress, size_t Length) = 0;
 protected:
 	bool	ShouldBreak(const register_t Address);
 	void	Breaking(register_t Address) { m_Broken = true; m_LastBroken = Address; };
