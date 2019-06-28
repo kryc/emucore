@@ -154,6 +154,12 @@ typedef enum{
 #define CHK_SET_FLAG_C_16(before,opnd,after) ((( after & 0x10000) > 0) ? (SET_FLAG_C()) : (RESET_FLAG_C()))
 #define CHK_SET_FLAG_H_16(before,opnd,after) ((((before ^ opnd ^ after) & 0x1000) == 0x1000) ? (SET_FLAG_H()) : (RESET_FLAG_H()))
 
+#define VBLANK_ISR 	0x40
+#define LCDC_ISR 	0x48
+#define TIMA_ISR 	0x50
+#define SERIAL_ISR 	0x58
+#define INPUT_ISR 	0x60
+
 class Cpu : 
 	public ProcessingCore,
 	public DebuggableCore,
@@ -191,7 +197,7 @@ private:
 	REGISTERS 				m_Registers{};
 	Memory 					m_Memory;
 	std::shared_ptr<Gpu>	m_Gpu;
-	InterruptState 			m_InterruptState = Enabled;
+	InterruptState 			m_InterruptState = Disabled;
 };
 
 #endif /* Cpu_hpp */

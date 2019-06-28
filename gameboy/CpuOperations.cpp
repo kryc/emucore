@@ -4458,7 +4458,13 @@ Cpu::CALL_NZ_a16(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction CALL NZ,a16 not implemented");
+	if( FLAG_NOT_SET_Z() )
+	{
+		Push((uint16_t)(m_Registers.PC + Opcode.InstructionWidth));
+		m_Registers.PC = Immediate16();
+		TickCount = Opcode.BranchTickCount;
+		return Opcode.BranchTickCount;
+	}
 	return Opcode.TickCount;
 }
 
@@ -4613,7 +4619,14 @@ Cpu::CALL_Z_a16(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction CALL Z,a16 not implemented");
+	if( FLAG_IS_SET_Z() )
+	{
+		Push((uint16_t)(m_Registers.PC + Opcode.InstructionWidth));
+		m_Registers.PC = Immediate16();
+		TickCount = Opcode.BranchTickCount;
+		return Opcode.BranchTickCount;
+	}
+	return Opcode.TickCount;
 	return Opcode.TickCount;
 }
 
@@ -4746,7 +4759,13 @@ Cpu::CALL_NC_a16(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction CALL NC,a16 not implemented");
+	if( FLAG_NOT_SET_C() )
+	{
+		Push((uint16_t)(m_Registers.PC + Opcode.InstructionWidth));
+		m_Registers.PC = Immediate16();
+		TickCount = Opcode.BranchTickCount;
+		return Opcode.BranchTickCount;
+	}
 	return Opcode.TickCount;
 }
 
@@ -4823,7 +4842,12 @@ Cpu::RET_C(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction RET C not implemented");
+	if( FLAG_IS_SET_C() )
+	{
+		m_Registers.PC = Pop();
+		TickCount = Opcode.BranchTickCount;
+		return Opcode.BranchTickCount;
+	}
 	return Opcode.TickCount;
 }
 
@@ -4877,7 +4901,14 @@ Cpu::CALL_C_a16(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction CALL C,a16 not implemented");
+	if( FLAG_IS_SET_C() )
+	{
+		Push((uint16_t)(m_Registers.PC + Opcode.InstructionWidth));
+		m_Registers.PC = Immediate16();
+		TickCount = Opcode.BranchTickCount;
+		return Opcode.BranchTickCount;
+	}
+	return Opcode.TickCount;
 	return Opcode.TickCount;
 }
 
@@ -4956,7 +4987,8 @@ Cpu::POP_HL(
  Flags:		- - - -
  --*/
 {
-	throw std::runtime_error("Instruction POP HL not implemented");
+	m_Registers.HL = Pop();
+
 	return Opcode.TickCount;
 }
 
@@ -5216,8 +5248,6 @@ Cpu::DI(
  Flags:		- - - -
  --*/
 {
-	assert( m_InterruptState == Enabled );
-
 	m_InterruptState = DisableRequested;
 
 	return Opcode.TickCount;

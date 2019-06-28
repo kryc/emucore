@@ -139,8 +139,9 @@ Cpu::OnInterrupt(int Interrupt)
  straight from memory
  --*/
 {
-	Push(m_Registers.PC);
-	m_Registers.PC = Interrupt;
+	std::string enabled = m_InterruptState == Enabled ? "(E)" : "(D)";
+	std::cout << "Interrupt raised " << enabled << ": " << std::hex << (int)Interrupt << std::dec << std::endl;
+	m_Memory[0xff0f] = m_Memory[0xff0f].Get() | Interrupt;
 }
 
 void
@@ -227,22 +228,68 @@ Cpu::Tick(void)
 	if( ticksUsed == ticksInCurrentOp )
 	{
 		/* We have completed the previous operation (or it is the first op).
-		 	we do a number of things now.
-		 	1) Check to see if we need to break for a debugger
-		 	2) Fetch a new operation to execute and reset the counters
+			we do a number of things now.
+			1) Check to see if we need to break for a debugger
+			2) Service any interrupts
+			3) Fetch a new operation to execute and reset the counters
 		 */
 		if( ShouldBreak(m_Registers.PC) )
 		{
 			return false;
 		}
-		
-		// if( m_Registers.PC > 0x8000 )
-		// {
-		// 	auto badOpcode = g_Instructions.at(m_Memory[m_Registers.PC].Get());
-		// 	std::cerr << "Bad PC detected!" << std::endl;
-		// 	std::cerr << std::hex << "\t[" << m_Registers.PC << "] " << std::dec << FormatDebugString(opcode.DebugString) << std::endl;
-		// 	std::cerr << "Exiting" << std::endl;
-		// }
+
+		if( m_InterruptState == Enabled )
+		{
+			/* read IF register to determine which interrupts fired */
+			uint8_t ints = m_Memory[0xFF0F].GetNoHook();
+			uint8_t ie = m_Memory[0xFFFF].GetNoHook();
+
+			m_InterruptState = DisableRequested;
+			if((ints & INTERRUPT_VBLANK) && (ie & INTERRUPT_VBLANK))
+			{
+				/* VBLANK */
+				Push(m_Registers.PC);
+				/* jump to ISR*/
+				m_Registers.PC = VBLANK_ISR;
+
+			}
+			if((ints & INTERRUPT_LCDC) && (ie & INTERRUPT_LCDC))
+			{
+				/* LCDC (STAT) */
+				Push(m_Registers.PC);
+				/* jump to ISR*/
+				m_Registers.PC = LCDC_ISR;
+
+				
+			}
+			if((ints & INTERRUPT_TIMA) && (ie & INTERRUPT_TIMA))
+			{
+				/* TIMA */
+				Push(m_Registers.PC);
+				/* jump to ISR*/
+				m_Registers.PC = TIMA_ISR;
+				
+			}
+			if((ints & INTERRUPT_SERIAL) && (ie & INTERRUPT_SERIAL))
+			{
+				/* SERIAL I/O */
+				Push(m_Registers.PC);
+				/* jump to ISR*/
+				m_Registers.PC = SERIAL_ISR;
+
+			}
+			if((ints & INTERRUPT_INPUT) && (ie & INTERRUPT_INPUT))
+			{
+				/* INPUT */
+				Push(m_Registers.PC);
+				/* jump to ISR*/
+				m_Registers.PC = INPUT_ISR;
+			}
+
+			m_Memory[0xFF0F] = 0;
+
+			m_InterruptState = EnableRequested;
+		}
 		
 		startingPC = m_Registers.PC;
 		uint8_t nextOpcode = m_Memory[m_Registers.PC].Get();
@@ -252,7 +299,27 @@ Cpu::Tick(void)
 		ticksInCurrentOp = opcode.TickCount;
 		ticksUsed = 0;
 		assert(opcode.TickCount <= opcode.BranchTickCount);
+		
+#ifdef DEBUG
+		/* Patch up the debug string */
+		std::cout << std::hex << "[" << m_Registers.PC << "] " << std::dec << FormatDebugString() << std::endl;
+#endif
+	}
+	
+	/* Make the operation callback */
+	if( ticksTaken < ticksInCurrentOp )
+	{
+		auto callable = opcode.Callback;
+		/* We pass in ticksInCurrentOp byref as it can change if a branch is taken */
+		ticksTaken += callable(this, opcode, ticksTaken, ticksInCurrentOp);
+		assert(ticksTaken <= ticksInCurrentOp);
+	}
 
+	ticksUsed++;
+	
+	/* End of the instruction */
+	if( ticksUsed == ticksInCurrentOp )
+	{
 		/* Handle interrupt state */
 		switch( m_InterruptState )
 		{
@@ -276,31 +343,18 @@ Cpu::Tick(void)
 				throw std::runtime_error("Invalid CPU interrupt state");
 				break;
 		}
-		
-#ifdef DEBUG
-		/* Patch up the debug string */
-		std::cout << std::hex << "[" << m_Registers.PC << "] " << std::dec << FormatDebugString() << std::endl;
-#endif
-	}
-	
-	if( ticksTaken < ticksInCurrentOp )
-	{
-		auto callable = opcode.Callback;
-		/* We pass in ticksInCurrentOp byref as it can change if a branch is taken */
-		ticksTaken += callable(this, opcode, ticksTaken, ticksInCurrentOp);
-		assert(ticksTaken <= ticksInCurrentOp);
-	}
 
-	ticksUsed++;
-	
-	if( ticksUsed == ticksInCurrentOp &&
-	   startingPC == m_Registers.PC )
-	{
+
 		/* Tick on the instruction pointer. ONLY if it didnt change in the instruction */
-		m_Registers.PC += opcode.InstructionWidth;
+		if ( startingPC == m_Registers.PC )
+		{
+			m_Registers.PC += opcode.InstructionWidth;
+		}
 	}
 
+	/* Tick the GPU */
 	m_Gpu->Tick();
+
 	return true;
 }
 

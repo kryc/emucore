@@ -11,7 +11,11 @@
 
 enum : int
 {
-	INTERRUPT_VBLANK = 0x40
+	INTERRUPT_VBLANK = 0x01,
+	INTERRUPT_LCDC = 0x02,
+	INTERRUPT_TIMA = 0x04,
+	INTERRUPT_SERIAL = 0x08,
+	INTERRUPT_INPUT = 0x10
 };
 
 #endif /* Common_hpp */
