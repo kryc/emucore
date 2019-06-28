@@ -1,7 +1,9 @@
-TARGET ?= gameboy
+TARGETS ?= gameboy gameboydebugger
 CPP ?= g++
 SRCS := $(wildcard *.cpp)
 OBJS := $(SRCS:.cpp=.o)
+GBDBGOBJS := $(filter-out main.o,$(OBJS))
+GBOBJS := $(filter-out debugger.o,$(OBJS))
 DEPS := $(OBJS:.o=.d)  # one dependency file for each source
 
 INC_DIRS := ../emucore/include/
@@ -12,8 +14,9 @@ LDFLAGS =
 LIBA = ../emucore/emulib.a
 
 .PHONY: $(TARGET)
-$(TARGET): $(OBJS)
-	g++ -o $@ $^ $(LIBA) $(LDFLAGS)
+$(TARGETS): $(OBJS)
+	g++ -o gameboy $(GBOBJS) $(LIBA) $(LDFLAGS)
+	g++ -o gameboydebugger $(GBDBGOBJS) $(LIBA) $(LDFLAGS)
 
 -include $(DEPS)   # include all dep files in the makefile
 
@@ -27,4 +30,4 @@ clean:
 	rm -f $(OBJS) $(TARGET) $(DEPS)
 
 .PHONY: all
-all: $(TARGET)
+all: $(TARGETS)
